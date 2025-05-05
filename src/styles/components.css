@@ -1,0 +1,21 @@
+@layer components {
+  .xs-p {
+    @apply text-xs leading-[1.5] tracking-normal;
+  }
+
+  .sm-p {
+    @apply text-sm leading-[1.5] tracking-normal;
+  }
+
+  .base-p {
+    @apply text-base leading-[1.5] tracking-normal;
+  }
+
+  .lg-p {
+    @apply text-lg leading-[1.2] tracking-normal;
+  }
+
+  .header-text {
+    @apply text-xl font-bold leading-[1.2] tracking-normal;
+  }
+}
