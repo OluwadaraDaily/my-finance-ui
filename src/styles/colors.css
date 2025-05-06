@@ -1,0 +1,26 @@
+/* Including colors from the design system */
+@theme {
+  --color-beige-500: #98908B;
+  --color-beige-100: #F8F4F0;
+  --color-grey-900: #201F24;
+  --color-grey-500: #696868;
+  --color-grey-300: #B3B3B3;
+  --color-grey-100: #F2F2F2;
+  
+  --color-app-green: #277C78;
+  --color-app-yellow: #F2CDAC;
+  --color-app-cyan: #82C9D7;
+  --color-app-navy: #626070;
+  --color-app-red: #C94736;
+  --color-app-purple: #826CB0;
+
+  --color-app-purple-2: #AF81BA;
+  --color-app-torquoise: #597C7C;
+  --color-app-brown: #93674F;
+  --color-app-magenta: #934F6F;
+  --color-app-blue: #3F82B2;
+  --color-app-navy-grey: #97A0AC;
+  --color-app-army-green: #7F9161;
+  --color-app-gold: #CAB361;
+  --color-app-orange: #BE6C49;
+}
