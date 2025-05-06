@@ -1,10 +1,16 @@
 import type { Metadata } from "next";
 import "./globals.css";
+import { Public_Sans } from "next/font/google";
 
 export const metadata: Metadata = {
   title: "My Finance App",
   description: "This is a finance app that helps you manage your finances.",
 };
+
+const publicSans = Public_Sans({
+  subsets: ["latin"],
+  variable: "--font-public-sans",
+});
 
 export default function RootLayout({
   children,
@@ -13,7 +19,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body>
+      <body className={`${publicSans.variable} font-sans`}>
         {children}
       </body>
     </html>

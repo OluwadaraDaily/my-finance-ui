@@ -1,6 +1,6 @@
 
 @theme {
-  --font-sans: "Public Sans", sans-serif;
+  --font-sans: var(--font-public-sans);
   --text-xs: 12px;
   --text-sm: 14px;
   --text-base: 16px;
