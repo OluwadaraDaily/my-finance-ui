@@ -26,3 +26,12 @@ body {
   background: var(--background);
   color: var(--foreground);
 }
+
+input::-ms-reveal,
+input::-ms-clear,
+input::-webkit-credentials-auto-fill-button,
+input::-webkit-clear-button,
+input[type="password"]::-webkit-textfield-decoration-container {
+  display: none !important;
+}
+

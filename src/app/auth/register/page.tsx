@@ -1,11 +1,12 @@
 "use client"
-import React, { useEffect } from "react"
-import { PasswordInput, TextInput } from "@/components/input"
 import { PrimaryButton } from "@/components/button"
+import { PasswordInput, TextInput } from "@/components/input"
 import { redirect } from "next/navigation"
+import React from "react"
 
-export default function Login() {
+export default function SignUp() {
   const [formData, setFormData] = React.useState({
+    name: "",
     email: "",
     password: "",
   })
@@ -14,18 +15,25 @@ export default function Login() {
     const { name, value } = e.target
     setFormData({ ...formData, [name]: value })
   }
-
+  
   const handleFormSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
     console.log("Form submitted with data:", formData)
     redirect("/dashboard")
   }
-
   return (
     <div className="md:w-[560px] w-[90%] mx-auto md:mx-0 bg-white p-8 rounded-lg">
-      <h1 className="text-2xl font-bold mb-4">Login</h1>
+      <h1 className="text-2xl font-bold mb-4">Sign Up</h1>
       <form onSubmit={handleFormSubmit}>
         <div className="my-8">
+          <TextInput
+            label="Name"
+            type="name"
+            name="name"
+            placeholder="Enter your name"
+            value={formData.name}
+            onChange={handleChange}
+          />
           <TextInput
             label="Email"
             type="email"
@@ -34,26 +42,31 @@ export default function Login() {
             value={formData.email}
             onChange={handleChange}
           />
-          <PasswordInput
-            label="Password"
-            name="password"
-            placeholder="Enter your password"
-            value={formData.password}
-            onChange={handleChange}
-          />
+          <div>
+            <PasswordInput
+              label="Create Password"
+              name="password"
+              placeholder="Enter your password"
+              value={formData.password}
+              onChange={handleChange}
+            />
+            <p className="text-xs text-gray-500 text-right mt-1">
+              Password must be at least 8 characters
+            </p>
+          </div>
         </div>
         <div className="mb-8 w-full">
           <PrimaryButton
-            label="Login"
+            label="Create Account"
             type="submit"
-            // disabled={!formData.email || !formData.password}
+            // disabled={!formData.name || !formData.email || !formData.password }
             disabled={false}
           />
         </div>
         <div className="text-center text-sm text-gray-500">
-          Need to create an account?{"   "}
-          <a href="/auth/register" className="text-grey-900 font-bold underline leading-2.5">
-            Sign Up
+          Already have an account?{"   "}
+          <a href="/auth/login" className="text-grey-900 font-bold underline leading-2.5">
+            Login
           </a>
         </div>
       </form>
