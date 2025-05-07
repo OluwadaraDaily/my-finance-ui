@@ -1,5 +1,5 @@
 
-@theme {
+@theme inline {
   --font-sans: var(--font-public-sans);
   --text-xs: 12px;
   --text-sm: 14px;
