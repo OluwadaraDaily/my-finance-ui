@@ -1,0 +1,2 @@
+export const activeItemStyle = "bg-beige-100 border-b-4 border-app-green text-black"
+export const dashboardItemStyle = "w-[65px] h-[44px] md:w-[104px] md:h-[66px] pt-2 pb-3 text-center rounded-tl-lg rounded-tr-lg"
