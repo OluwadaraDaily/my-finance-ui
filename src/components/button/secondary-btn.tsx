@@ -11,7 +11,7 @@ export default function SecondaryButton({
 }) {
   return (
     <button
-      className={`w-full text-lg text-grey-900 bg-beige-100 font-bold p-4 rounded-lg focus:outline-none focus:shadow-outline hover:cursor-pointer border-none hover:border-beige-500 hover:bg-white ${
+      className={`w-full text-lg bg-beige-100 font-bold p-4 rounded-lg focus:outline-none focus:shadow-outline hover:cursor-pointer border-none hover:border-beige-500 hover:bg-white ${
         disabled ? "opacity-50 cursor-not-allowed" : ""
       }`}
       onClick={onClick}

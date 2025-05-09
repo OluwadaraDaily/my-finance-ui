@@ -51,7 +51,7 @@ export default function PotsSummary() {
           />
           <div>
             <p className="text-sm text-grey-500 mb-2">Total Saved</p>
-            <p className="text-xl text-grey-900 font-bold">₦850</p>
+            <p className="text-xl font-bold">₦850</p>
           </div>
         </div>
         <div className="grid grid-cols-2 grid-rows-2 gap-4">

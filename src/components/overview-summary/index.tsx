@@ -7,11 +7,11 @@ export default function OverviewSummary() {
       </div>
       <div className="p-5 rounded-xl bg-white w-full mb-3">
         <p className="text-sm mb-3 text-grey-500">Income</p>
-        <p className="text-xl font-bold text-grey-900">₦3,814.25</p>
+        <p className="text-xl font-bold">₦3,814.25</p>
       </div>
       <div className="p-5 rounded-xl bg-white w-full">
         <p className="text-sm mb-3 text-grey-500">Expenses</p>
-        <p className="text-xl font-bold text-grey-900">₦1,700.50</p>
+        <p className="text-xl font-bold">₦1,700.50</p>
       </div>
     </div>
   )

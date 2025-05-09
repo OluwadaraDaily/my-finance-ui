@@ -13,7 +13,7 @@ export default function TertiaryButton({
 }) {
   return (
     <button
-      className={`w-full text-sm bg-transparent flex items-center gap-3 text-grey-500 border-none focus:outline-none focus:shadow-outline hover:text-grey-900 hover:cursor-pointer ${
+      className={`text-sm bg-transparent flex items-center gap-3 text-grey-500 border-none focus:outline-none focus:shadow-outline hover:text-grey-900 hover:cursor-pointer ${
         disabled ? "opacity-50 cursor-not-allowed" : ""
       }`}
       onClick={onClick}
