@@ -1,5 +1,5 @@
 "use client"
-import React, { useEffect } from "react"
+import React from "react"
 import { PasswordInput, TextInput } from "@/components/input"
 import { PrimaryButton } from "@/components/button"
 import { redirect } from "next/navigation"
