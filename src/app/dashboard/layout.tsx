@@ -14,7 +14,7 @@ export default function DashboardLayout({
       <div className={`flex-1 transition-all duration-300 ease-in-out ${
         isCollapsed ? 'lg:ml-[88px]' : 'lg:ml-[300px]'
       }`}>
-        <div className="h-[calc(100vh-52px)] md:h-[calc(100vh-74px)] lg:h-screen overflow-y-auto">
+        <div className="h-[calc(100vh-52px)] md:h-[calc(100vh-74px)] lg:h-screen overflow-y-auto bg-beige-100 py-6">
           {children}
         </div>
       </div>

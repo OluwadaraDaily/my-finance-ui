@@ -1,4 +1,4 @@
-export default function PrimaryButton({
+export default function SecondaryButton({
   label,
   onClick,
   disabled = false,
@@ -11,7 +11,7 @@ export default function PrimaryButton({
 }) {
   return (
     <button
-      className={`w-full text-sm bg-grey-900 text-white font-bold p-4 rounded-lg focus:outline-none focus:shadow-outline hover:bg-grey-500 hover:cursor-pointer ${
+      className={`w-full text-lg text-grey-900 bg-beige-100 font-bold p-4 rounded-lg focus:outline-none focus:shadow-outline hover:cursor-pointer border-none hover:border-beige-500 hover:bg-white ${
         disabled ? "opacity-50 cursor-not-allowed" : ""
       }`}
       onClick={onClick}
