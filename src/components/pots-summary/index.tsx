@@ -41,8 +41,8 @@ export default function PotsSummary() {
           />
         </div>
       </div>
-      <div className="flex flex-col md:flex-row">
-        <div className="p-4 flex items-center gap-4 bg-beige-100 rounded-xl mb-5">
+      <div className="flex flex-col md:flex-row md:gap-5">
+        <div className="p-4 flex items-center gap-4 bg-beige-100 rounded-xl mb-5 md:mb-0 md:flex-[45%]">
           <Image
             src="/icons/pots-jar.svg"
             alt=""
@@ -54,7 +54,7 @@ export default function PotsSummary() {
             <p className="text-xl font-bold">₦850</p>
           </div>
         </div>
-        <div className="grid grid-cols-2 grid-rows-2 gap-4">
+        <div className="grid grid-cols-2 grid-rows-2 gap-4 md:flex-[55%]">
           {
             POT_ITEMS.map((item: IPotItem) => (
               <PotItem

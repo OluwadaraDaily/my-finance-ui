@@ -19,7 +19,7 @@ export default function BudgetsSummary() {
   const router = useRouter();
   return (
     <div className="bg-white rounded-xl p-8">
-      <div className="flex items-center justify-between">
+      <div className="flex items-center justify-between mb-5">
         <h2 className="text-lg font-semibold">Budgets</h2>
         <TertiaryButton
           label="See Details"
@@ -27,10 +27,10 @@ export default function BudgetsSummary() {
         />
       </div>
       <div className="flex flex-col md:flex-row gap-4">
-        <div className="relative w-[300px] h-[300px]">
+        <div className="relative w-[300px] h-[300px] md:flex-[80%]">
           <BudgetsChart />
         </div>
-        <div className="grid grid-cols-2 grid-rows-2 gap-4">
+        <div className="grid grid-cols-2 grid-rows-2 gap-4 md:flex-[20%] md:grid-cols-1 md:grid-rows-4">
           {
             BUDGET_SUMMARY_DATA.map((item: IPotItem) => (
               <PotItem
