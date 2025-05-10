@@ -65,7 +65,7 @@ export default function SignUp() {
         </div>
         <div className="text-center text-sm text-gray-500">
           Already have an account?{"   "}
-          <a href="/auth/login" className="text-grey-900 font-bold underline leading-2.5">
+          <a href="/auth/login" className="font-bold underline leading-2.5">
             Login
           </a>
         </div>

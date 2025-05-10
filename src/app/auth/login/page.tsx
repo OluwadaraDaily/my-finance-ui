@@ -52,7 +52,7 @@ export default function Login() {
         </div>
         <div className="text-center text-sm text-gray-500">
           Need to create an account?{"   "}
-          <a href="/auth/register" className="text-grey-900 font-bold underline leading-2.5">
+          <a href="/auth/register" className="font-bold underline leading-2.5">
             Sign Up
           </a>
         </div>

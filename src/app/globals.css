@@ -5,7 +5,7 @@
 
 :root {
   --background: #ffffff;
-  --foreground: #171717;
+  --foreground: var(--color-grey-900);
 }
 
 @theme inline {
@@ -34,4 +34,3 @@ input::-webkit-clear-button,
 input[type="password"]::-webkit-textfield-decoration-container {
   display: none !important;
 }
-

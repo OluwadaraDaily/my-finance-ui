@@ -1,10 +1,27 @@
+"use client"
+
+import BudgetsSummary from "@/components/budgets-summary"
+import OverviewSummary from "@/components/overview-summary"
+import PotsSummary from "@/components/pots-summary"
+import TransactionsSummary from "@/components/transactions-summary"
+import RecurringBillsSummary from "@/components/recurring-bills-summary"
+
+
 export default function Dashboard() {
   return (
-    <div className="md:w-[560px] w-[90%] mx-auto md:mx-0 bg-white p-8 rounded-lg">
-      <h1 className="text-2xl font-bold mb-4">Dashboard</h1>
-      <p className="text-gray-500 text-sm">
-        Welcome to your dashboard! Here you can manage your account and settings.
-      </p>
+    <div
+      className="w-[95%] md:w-[90%] mx-auto"
+    >
+      <h1 className="text-xl font-semibold">Overview</h1>
+      <div className="my-8">
+        <OverviewSummary/>
+      </div>
+      <div className="flex flex-col gap-8">
+        <PotsSummary/>
+        <TransactionsSummary />
+        <BudgetsSummary />
+        <RecurringBillsSummary />
+      </div>
     </div>
   )
 }
