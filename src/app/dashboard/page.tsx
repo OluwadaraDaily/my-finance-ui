@@ -1,5 +1,6 @@
 "use client"
 
+import BudgetsSummary from "@/components/budgets-summary"
 import OverviewSummary from "@/components/overview-summary"
 import PotsSummary from "@/components/pots-summary"
 import TransactionsSummary from "@/components/transactions-summary"
@@ -13,13 +14,10 @@ export default function Dashboard() {
       <div className="my-8">
         <OverviewSummary/>
       </div>
-      <div>
-        <div className="mb-8">
-          <PotsSummary/>
-        </div>
-        <div>
-          <TransactionsSummary/>
-        </div>
+      <div className="flex flex-col gap-8">
+        <PotsSummary/>
+        <TransactionsSummary />
+        <BudgetsSummary/>
       </div>
     </div>
   )

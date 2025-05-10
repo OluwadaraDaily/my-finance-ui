@@ -11,22 +11,22 @@ export default function PotsSummary() {
     {
       label: "Savings",
       amount: 159,
-      color: "app-green"
+      color: "#277C78"
     },
     {
       label: "Gift",
       amount: 40,
-      color: "app-cyan"
+      color: "#82C9D7"
     },
     {
       label: "Concert Ticket",
       amount: 110,
-      color: "app-navy"
+      color: "#626070"
     },
     {
       label: "New Laptop",
       amount: 10,
-      color: "app-yellow"
+      color: "#F2CDAC"
     },
   ]
 

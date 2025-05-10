@@ -34,4 +34,3 @@ input::-webkit-clear-button,
 input[type="password"]::-webkit-textfield-decoration-container {
   display: none !important;
 }
-
