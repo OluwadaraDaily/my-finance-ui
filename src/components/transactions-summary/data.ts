@@ -26,6 +26,10 @@ const amounts = [
   2100.25, -1350.75, 1850.50, -1100.25, 2450.00
 ]
 
+const categories = [
+  "Entertainment", "Bills", "Groceries", "Dining Out", "Shopping", "Transportation", "Personal Care", "Education", "Lifestyle", "Shopping", "General"
+]
+
 export const transactions: ITransaction[] = Array.from({ length: 50 }, (_, index) => {
   const isCompany = index % 2 === 0
   const name = isCompany 
@@ -41,6 +45,7 @@ export const transactions: ITransaction[] = Array.from({ length: 50 }, (_, index
     name,
     imageUrl,
     amount: amounts[index % amounts.length],
-    date: dates[index % dates.length]
+    date: dates[index % dates.length],
+    category: categories[index % categories.length]
   }
 })
