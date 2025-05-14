@@ -3,4 +3,5 @@ export interface ITransaction {
   imageUrl: string
   amount: number
   date: string
+  category: string
 }
