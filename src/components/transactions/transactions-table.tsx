@@ -78,7 +78,7 @@ export default function TransactionsTable({ data, globalFilter, setGlobalFilter 
   });
 
   return (
-    <div className="h-full md:h-[600px] overflow-y-auto">
+    <div className="h-full overflow-y-auto">
       <table className="w-full mt-6">
         <colgroup>
           <col className="w-[45%]" />

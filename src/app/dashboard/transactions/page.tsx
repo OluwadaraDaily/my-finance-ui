@@ -6,12 +6,17 @@ import React, { useState, useMemo } from "react";
 import { transactions } from "@/components/transactions-summary/data";
 import TransactionListMobile from "@/components/transactions/transaction-list-mobile";
 import TransactionsTable from "@/components/transactions/transactions-table";
+import Pagination from "@/components/pagination";
+
+const PER_PAGE = 10;  
 
 export default function TransactionsPage() {
   const [globalFilter, setGlobalFilter] = useState("");
   const [sortOption, setSortOption] = useState("Latest");
   const [activeCategory, setActiveCategory] = useState("All Transactions");
-
+  const [currentPage, setCurrentPage] = useState(1);
+  
+  
   const handleSearch = (search: string) => {
     setGlobalFilter(String(search));
   }
@@ -44,6 +49,19 @@ export default function TransactionsPage() {
     });
   }, [activeCategory, sortOption]);
 
+  const totalPages = Math.ceil((processedData.length * 2) / PER_PAGE);
+  console.log("totalPages = ", totalPages);
+  const handlePageChange = (page: number) => {
+    setCurrentPage(page);
+  }
+
+  // Get paginated data
+  const paginatedData = useMemo(() => {
+    const startIndex = (currentPage - 1) * PER_PAGE;
+    const endIndex = startIndex + PER_PAGE;
+    return [...processedData, ...processedData].slice(startIndex, endIndex);
+  }, [processedData, currentPage]);
+
   return (
     <div className="w-[95%] md:w-[90%] mx-auto">
       <h1 className="text-xl font-semibold mb-8">Transactions</h1>
@@ -62,14 +80,21 @@ export default function TransactionsPage() {
           </div>
           {/* Mobile List */}
           <div className="block md:hidden">
-            <TransactionListMobile data={processedData} />
+            <TransactionListMobile data={paginatedData} />
           </div>
           {/* Table for md+ */}
-          <div className="hidden md:block">
+          <div className="hidden md:block mb-6">
             <TransactionsTable
-              data={processedData}
+              data={paginatedData}
               globalFilter={globalFilter}
               setGlobalFilter={setGlobalFilter}
+            />
+          </div>
+          <div className="mt-6">
+            <Pagination
+              currentPage={currentPage}
+              totalPages={totalPages}
+              onPageChange={handlePageChange}
             />
           </div>
         </div>
