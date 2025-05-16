@@ -83,10 +83,12 @@ export default function BudgetsPage() {
         {/* Header */}
         <div className="flex items-center justify-between mb-8">
           <h1 className="text-xl font-semibold">Budgets</h1>
-          <PrimaryButton
-            label="+ Add New Budget"
-            onClick={() => setIsAddBudgetModalOpen(true)}
-          />
+          <div>
+            <PrimaryButton
+              label="+ Add New Budget"
+              onClick={() => setIsAddBudgetModalOpen(true)}
+            />
+          </div>
         </div>
         <div className="lg:flex lg:items-start lg:gap-8">
           {/* Spending Summary */}

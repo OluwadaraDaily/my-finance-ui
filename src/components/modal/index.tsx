@@ -27,7 +27,7 @@ export default function Modal({
       className="fixed inset-0 z-10 flex items-center justify-center bg-black/50"
       onClick={handleClickOutside}
     >
-      <div className="w-[90%] mx-auto bg-white rounded-lg py-6">
+      <div className="w-[90%] lg:w-[560px] mx-auto bg-white rounded-lg py-6 lg:py-8">
         <div className="w-[90%] mx-auto">
           {/* Modal Header */}
           <div className="flex items-center justify-between mb-6">
