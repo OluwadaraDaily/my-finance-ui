@@ -41,7 +41,7 @@ export default function Filter({ onFilter }: { onFilter: (filter: string) => voi
       </div>
       {isOpen && (
         <div
-          className="absolute top-[120%] right-0 md:left-1/2 md:translate-x-[-50%] bg-white rounded-lg px-5 py-3 w-[177px] h-[300px] shadow-[0_0_10px_rgba(0,0,0,0.1)] overflow-y-auto"
+          className="absolute top-[120%] right-0 md:left-1/2 md:translate-x-[-50%] bg-white rounded-lg px-5 py-3 w-[177px] h-[300px] shadow-menu overflow-y-auto"
           onClick={handleOpen}
         >
           {categories.map((option :string, index :number) => (

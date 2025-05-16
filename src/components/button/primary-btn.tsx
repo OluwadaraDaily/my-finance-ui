@@ -11,7 +11,7 @@ export default function PrimaryButton({
 }) {
   return (
     <button
-      className={`w-full text-sm bg-grey-900 text-white font-bold p-4 rounded-lg focus:outline-none focus:shadow-outline hover:bg-grey-500 hover:cursor-pointer ${
+      className={`text-sm bg-grey-900 text-white font-bold p-4 rounded-lg focus:outline-none focus:shadow-outline hover:bg-grey-500 hover:cursor-pointer ${
         disabled ? "opacity-50 cursor-not-allowed" : ""
       }`}
       onClick={onClick}
