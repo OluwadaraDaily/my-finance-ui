@@ -49,13 +49,13 @@ export function BudgetsChart() {
             <Cell key={entry.label} fill={entry.color} />
           ))}
           <Label
-            value={`${formatCurrency(spent)}`}
+            value={`${formatCurrency(spent, { maximumFractionDigits: 0, minimumFractionDigits: 0 })}`}
             id="main-text"
             position="center"
             dx={0}
             dy={-15}
             style={{
-              fontSize: 28,
+              fontSize: 32,
               fontWeight: 'bold',
               fill: '#201F24',
               textAnchor: 'middle',
@@ -63,13 +63,13 @@ export function BudgetsChart() {
             }}
           />
           <Label
-            value={`of ${formatCurrency(total)} limit`}
+            value={`of ${formatCurrency(total, { maximumFractionDigits: 0, minimumFractionDigits: 0 })} limit`}
             id="sub-text"
             position="center"
             dx={0} 
-            dy={18}
+            dy={23}
             style={{
-              fontSize: 14,
+              fontSize: 16,
               fill: '#696868',
               textAnchor: 'middle',
               dominantBaseline: 'middle',
