@@ -33,7 +33,7 @@ export default function TextInput({
           </div>
         )}
         <input
-          className={`appearance-none border border-beige-500 rounded-lg w-full py-3 px-5 text-gray-500 leading-tight focus:outline-none ${
+          className={`appearance-none border border-beige-500 rounded-lg w-full py-3 px-5 text-gray-900 leading-tight focus:outline-none ${
             error ? 'border-red-500' : ''
           } ${withPrefix ? 'pl-10' : ''}`}
           id={label}

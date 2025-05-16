@@ -1,7 +1,7 @@
 "use client";
 import Modal from "@/components/modal";
 import { SelectInput, TextInput } from "../input";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { COLOR_TAG_OPTIONS, BUDGET_CATEGORY_OPTIONS } from "@/data/budget";
 import PrimaryButton from "../button/primary-btn";
 import { IBudget } from "@/types/budgets";
@@ -20,6 +20,14 @@ export default function EditBudgetModal({
     maximumSpending: budget.amount,
     colorTag: budget.color,
   });
+
+  useEffect(() => {
+    setFormData({
+      budgetCategory: budget.name,
+      maximumSpending: budget.amount,
+      colorTag: budget.color,
+    });
+  }, [budget]);
   
   const hasChanges = () => {
     return formData.budgetCategory !== budget.name ||
