@@ -1,39 +1,60 @@
-## My Finance
+# My Finance
 
-This is an application that is to help anyone document their finances, make a budget for the week/month/year, monitor savings and take a hold on their recurring bill.
+A comprehensive personal finance management application built with Next.js that helps users take control of their financial life.
 
-## Current Status
+## Features
 
-The project is still in progress... (I will update the ReadMe as the project progresses)
+- **Expense Tracking**: Document and categorize all your expenses
+- **Budget Planning**: Create and manage budgets for different time periods (weekly/monthly/yearly)
+- **Savings Monitoring**: Track your savings goals and progress
+- **Bill Management**: Keep track of recurring bills and payment schedules
+- **Financial Analytics**: Visualize your spending patterns and financial health
 
+## Tech Stack
 
-## How to run the application
+- **Frontend**: Next.js, React, TypeScript
+- **Styling**: Tailwind CSS
+- **State Management**: React Context API
+- **Authentication**: NextAuth.js
+- **Database**: MongoDB
+- **Deployment**: Vercel
 
-First, run the development server:
+## Getting Started
+
+1. Clone the repository
+2. Install dependencies:
+
+```bash
+npm install
+```
+
+3. Run the development server:
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+4. Open [http://localhost:3000](http://localhost:3000) to view the application
 
-## Learn More
+## For Recruiters
 
-To learn more about Next.js, take a look at the following resources:
+### Live Demo
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+Visit the deployed version of My Finance at: [https://my-finance-app.vercel.app](https://my-finance-app.vercel.app)
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+### Key Technical Achievements
 
-## Deploy on Vercel
+- Built responsive and accessible UI components
+- Created real-time data visualization for financial metrics
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+### Contact
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Feel free to reach out if you'd like to discuss potential opportunities or have any questions about the implementation.
+
+## Contributing
+
+Contributions are welcome! Please feel free to submit a Pull Request.
+
+## License
+
+This project is licensed under the MIT License - see the LICENSE file for details.
