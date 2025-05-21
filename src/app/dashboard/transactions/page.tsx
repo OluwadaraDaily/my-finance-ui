@@ -70,6 +70,7 @@ export default function TransactionsPage() {
           <div className="flex items-center gap-4 md:gap-6 justify-between mb-8">
             <div className="md:flex-[30%] lg:flex-[45%]">
               <SearchBar
+                type="transaction"
                 onSearch={handleSearch}
               />
             </div>
