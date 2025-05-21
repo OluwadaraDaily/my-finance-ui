@@ -1,9 +1,5 @@
+import { redirect } from 'next/navigation';
+
 export default function Home() {
-  return (
-    <div className="">
-      <h4 className="header-text">
-        This is a header text!
-      </h4>
-    </div>
-  );
+  redirect('/dashboard');
 }
