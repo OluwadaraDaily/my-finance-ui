@@ -11,7 +11,7 @@ export default function SearchBar({ onSearch, type }: { onSearch: (search: strin
   }
 
   return (
-    <div className="flex items-center gap-4 px-5 py-3 rounded-lg border border-grey-500 lg:w-[320px]">
+    <div className="flex items-center gap-4 px-5 py-3 rounded-lg border border-grey-500 lg:max-w-[320px]">
       <input 
         type="search"
         placeholder={`Search ${type}`} 
