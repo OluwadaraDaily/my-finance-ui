@@ -25,7 +25,7 @@ export default function Login() {
     <div className="md:w-[560px] w-[90%] mx-auto md:mx-0 bg-white p-8 rounded-lg">
       <h1 className="text-2xl font-bold mb-4">Login</h1>
       <form onSubmit={handleFormSubmit}>
-        <div className="my-8">
+        <div className="my-8 flex flex-col gap-4">
           <TextInput
             label="Email"
             type="email"

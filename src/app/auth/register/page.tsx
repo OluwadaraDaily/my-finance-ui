@@ -1,12 +1,15 @@
 "use client"
 import { PrimaryButton } from "@/components/button"
 import { PasswordInput, TextInput } from "@/components/input"
-import { redirect } from "next/navigation"
+import { authService } from "@/lib/api/services/authService"
+import { useRouter } from "next/navigation"
 import React from "react"
+import { toast } from "sonner"
 
 export default function SignUp() {
+  const router = useRouter();
   const [formData, setFormData] = React.useState({
-    name: "",
+    username: "",
     email: "",
     password: "",
   })
@@ -16,22 +19,36 @@ export default function SignUp() {
     setFormData({ ...formData, [name]: value })
   }
   
-  const handleFormSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleFormSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
-    console.log("Form submitted with data:", formData)
-    redirect("/dashboard")
+    try {
+      const response = await authService.register(formData)
+      console.log("REGISTER RESPONSE =>", response)
+      toast.success("Registration successful", {
+        description: "Please check your email for verification",
+      })
+      setFormData({
+        username: "",
+        email: "",
+        password: "",
+      })
+      router.push("/auth/login")
+    } catch (error: unknown) {
+      const errorMessage = (error as { response: { data: { detail: string } } }).response?.data?.detail
+      toast.error(errorMessage)
+    }
   }
   return (
     <div className="md:w-[560px] w-[90%] mx-auto md:mx-0 bg-white p-8 rounded-lg">
       <h1 className="text-2xl font-bold mb-4">Sign Up</h1>
       <form onSubmit={handleFormSubmit}>
-        <div className="my-8">
+        <div className="my-8 flex flex-col gap-4">
           <TextInput
-            label="Name"
-            type="name"
-            name="name"
-            placeholder="Enter your name"
-            value={formData.name}
+            label="Username"
+            type="username"
+            name="username"
+            placeholder="Enter your username"
+            value={formData.username}
             onChange={handleChange}
           />
           <TextInput
