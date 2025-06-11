@@ -3,7 +3,7 @@ import { PrimaryButton } from "@/components/button"
 import { PasswordInput, TextInput } from "@/components/input"
 import { authService } from "@/lib/api/services/authService"
 import { useRouter, useSearchParams } from "next/navigation"
-import React from "react"
+import React, { Suspense } from "react"
 import { toast } from "sonner"
 import { useMutation } from "@tanstack/react-query"
 import { zodResolver } from "@hookform/resolvers/zod"
@@ -17,7 +17,7 @@ const loginSchema = z.object({
 
 type LoginFormData = z.infer<typeof loginSchema>
 
-export default function Login() {
+function LoginForm() {
   const router = useRouter()
   const searchParams = useSearchParams()
   const redirectTo = searchParams.get('from') || '/dashboard'
@@ -87,5 +87,17 @@ export default function Login() {
         </div>
       </form>
     </div>
+  )
+}
+
+export default function Login() {
+  return (
+    <Suspense fallback={
+      <div className="md:w-[560px] w-[90%] mx-auto md:mx-0 bg-white p-8 rounded-lg">
+        <h1 className="text-2xl font-bold mb-4">Loading...</h1>
+      </div>
+    }>
+      <LoginForm />
+    </Suspense>
   )
 }
