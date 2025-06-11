@@ -16,12 +16,12 @@ export default function Dashboard() {
       <div className="my-8">
         <OverviewSummary/>
       </div>
-      <div className="flex flex-col gap-8 lg:flex-row lg:items-stretch">
-        <div className="flex flex-col gap-8 lg:flex-[60%]">
+      <div className="flex flex-col gap-4 lg:flex-row lg:items-stretch">
+        <div className="flex flex-col gap-4 lg:flex-[50%]">
           <PotsSummary/>
           <TransactionsSummary />
         </div>
-        <div className="flex flex-col gap-8 lg:flex-[40%]">
+        <div className="flex flex-col gap-4 lg:flex-[50%]">
           <BudgetsSummary />
           <RecurringBillsSummary />
         </div>

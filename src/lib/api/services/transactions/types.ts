@@ -53,3 +53,35 @@ export interface IUpdateTransaction {
   pot_id?: number;
   meta_data?: Record<string, unknown>;
 }
+
+export interface TransactionQueryParams {
+  skip?: number;
+  limit?: number;
+  sort_by?: string;
+  sort_order?: 'asc' | 'desc';
+  start_date?: string;
+  end_date?: string;
+  type?: string;
+  category_id?: number;
+  budget_id?: number;
+  min_amount?: number;
+  max_amount?: number;
+  recipient?: string;
+  sender?: string;
+}
+
+export interface ITransaction {
+  id: number;
+  amount: number;
+  transaction_date: string;
+  description: string;
+  type: string;
+  category_id?: number;
+  budget_id?: number;
+  recipient?: string;
+  sender?: string;
+  meta_data?: Record<string, unknown>;
+  // UI specific fields
+  imageUrl?: string;
+  name?: string;
+}

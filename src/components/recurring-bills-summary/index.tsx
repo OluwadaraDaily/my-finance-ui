@@ -1,6 +1,18 @@
 import { TertiaryButton } from "../button";
 import { useRouter } from "next/navigation";
 import BillItem from "./bill-item";
+import { Sparkles } from "lucide-react";
+
+const ComingSoonOverlay = () => (
+    <div className="absolute inset-0 bg-gradient-to-br from-white/80 to-white/95 backdrop-blur-[2px] rounded-xl flex items-center justify-center z-10">
+      <div className="flex flex-col items-center">
+        <div className="flex items-center gap-2 bg-gradient-to-r from-purple-500 to-blue-500 text-white px-4 py-2 rounded-full shadow-lg animate-pulse">
+          <Sparkles className="w-4 h-4" />
+          <span className="font-medium">Coming Soon</span>
+        </div>
+      </div>
+    </div>
+  );
 
 export default function RecurringBillsSummary() {
   const router = useRouter();
@@ -19,7 +31,8 @@ export default function RecurringBillsSummary() {
     }
   ]
   return (
-    <div className="py-6 px-5 bg-white rounded-xl">
+    <div className="py-6 px-5 bg-white rounded-xl relative">
+      <ComingSoonOverlay />
       <div className="flex items-center justify-between mb-8">
         <h2 className="text-lg font-semibold">Recurring Bills</h2>
         <div>

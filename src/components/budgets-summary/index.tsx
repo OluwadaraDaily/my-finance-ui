@@ -26,11 +26,11 @@ export default function BudgetsSummary() {
           onClick={() => router.push("/dashboard/budgets")}
         />
       </div>
-      <div className="flex flex-col md:flex-row gap-4 lg:flex-col">
+      <div className="flex flex-col md:flex-row gap-4">
         <div className="relative w-[300px] h-[300px] md:flex-[80%]">
           <BudgetsChart />
         </div>
-        <div className="grid grid-cols-2 grid-rows-2 gap-4 md:flex-[20%] md:grid-cols-1 md:grid-rows-4 lg:grid-cols-2 lg:grid-rows-2 lg:w-[80%] lg:mx-auto">
+        <div className="grid grid-cols-2 grid-rows-2 gap-4 md:flex-[20%] md:grid-cols-1 md:grid-rows-4">
           {
             BUDGET_SUMMARY_DATA.map((item: IPotItem) => (
               <PotItem

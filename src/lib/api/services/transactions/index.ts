@@ -1,9 +1,9 @@
 import api from "@/lib/api/axios";
 import { APIResponse } from "@/types/auth";
-import { ICreateTransaction, IUpdateTransaction, Transaction, TransactionSummary } from "./types";
+import { ICreateTransaction, IUpdateTransaction, Transaction, TransactionSummary, TransactionQueryParams } from "./types";
 
-const getTransactions = async (): Promise<APIResponse<Transaction[]>> => {
-  const response = await api.get('/transactions');
+const getTransactions = async (params?: TransactionQueryParams): Promise<APIResponse<Transaction[]>> => {
+  const response = await api.get('/transactions', { params });
   return response.data;
 }
 
