@@ -1,6 +1,5 @@
 import api from '../axios';
 import { AuthResponse } from '@/types/auth';
-import { AxiosError } from 'axios';
 
 interface RegisterPayload {
   email: string;
@@ -15,16 +14,7 @@ export const authService = {
       console.log('Registration successful:', response.data);
       return response.data;
     } catch (error) {
-      if (error instanceof AxiosError) {
-        console.error('Registration error details:', {
-          message: error.message,
-          config: error.config,
-          response: error.response?.data,
-          status: error.response?.status,
-        });
-      } else {
-        console.error('Unknown error during registration:', error);
-      }
+      console.error('Registration error:', error);
       throw error;
     }
   },

@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import { Public_Sans } from "next/font/google";
-import { Toaster } from "@/components/ui/sonner"
+import Providers from "./providers";
 
 export const metadata: Metadata = {
   title: "My Finance App",
@@ -21,8 +21,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={`${publicSans.variable} font-sans`}>
-        {children}
-        <Toaster position="top-right" richColors />
+        <Providers>{children}</Providers>
       </body>
     </html>
   );

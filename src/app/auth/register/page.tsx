@@ -5,79 +5,90 @@ import { authService } from "@/lib/api/services/authService"
 import { useRouter } from "next/navigation"
 import React from "react"
 import { toast } from "sonner"
+import { useMutation } from "@tanstack/react-query"
+import { zodResolver } from "@hookform/resolvers/zod"
+import { useForm } from "react-hook-form"
+import { z } from "zod"
+
+const registerSchema = z.object({
+  username: z.string()
+    .min(3, "Username must be at least 3 characters")
+    .max(30, "Username cannot exceed 30 characters")
+    .regex(/^[a-zA-Z0-9_-]+$/, "Username can only contain letters, numbers, underscores, and hyphens"),
+  email: z.string().email("Please enter a valid email"),
+  password: z.string().min(8, "Password must be at least 8 characters"),
+})
+
+type RegisterFormData = z.infer<typeof registerSchema>
 
 export default function SignUp() {
-  const router = useRouter();
-  const [formData, setFormData] = React.useState({
-    username: "",
-    email: "",
-    password: "",
+  const router = useRouter()
+  
+  const {
+    register,
+    handleSubmit,
+    reset,
+    formState: { errors, isValid },
+  } = useForm<RegisterFormData>({
+    resolver: zodResolver(registerSchema),
+    mode: "onChange",
   })
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target
-    setFormData({ ...formData, [name]: value })
-  }
-  
-  const handleFormSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault()
-    try {
-      const response = await authService.register(formData)
-      console.log("REGISTER RESPONSE =>", response)
+  const registerMutation = useMutation({
+    mutationFn: (data: RegisterFormData) => authService.register(data),
+    onSuccess: () => {
       toast.success("Registration successful", {
         description: "Please check your email for verification",
       })
-      setFormData({
-        username: "",
-        email: "",
-        password: "",
-      })
+      reset()
       router.push("/auth/login")
-    } catch (error: unknown) {
-      const errorMessage = (error as { response: { data: { detail: string } } }).response?.data?.detail
-      toast.error(errorMessage)
-    }
+    },
+    onError: (error: unknown) => {
+      const errorMessage = (error as { response: { data: { detail: string } } }).response?.data?.detail ?? "Registration failed"
+      toast.error("Registration failed", {
+        description: errorMessage,
+      })
+    },
+  })
+
+  // Form submission handler
+  const onSubmit = (data: RegisterFormData) => {
+    registerMutation.mutate(data)
   }
+
   return (
     <div className="md:w-[560px] w-[90%] mx-auto md:mx-0 bg-white p-8 rounded-lg">
       <h1 className="text-2xl font-bold mb-4">Sign Up</h1>
-      <form onSubmit={handleFormSubmit}>
+      <form onSubmit={handleSubmit(onSubmit)}>
         <div className="my-8 flex flex-col gap-4">
           <TextInput
             label="Username"
-            type="username"
-            name="username"
+            type="text"
+            {...register("username")}
             placeholder="Enter your username"
-            value={formData.username}
-            onChange={handleChange}
+            error={errors.username?.message}
           />
           <TextInput
             label="Email"
             type="email"
-            name="email"
+            {...register("email")}
             placeholder="Enter your email"
-            value={formData.email}
-            onChange={handleChange}
+            error={errors.email?.message}
           />
           <div>
             <PasswordInput
               label="Create Password"
-              name="password"
+              {...register("password")}
               placeholder="Enter your password"
-              value={formData.password}
-              onChange={handleChange}
+              error={errors.password?.message}
             />
-            <p className="text-xs text-gray-500 text-right mt-1">
-              Password must be at least 8 characters
-            </p>
           </div>
         </div>
         <div className="mb-8 w-full">
           <PrimaryButton
-            label="Create Account"
+            label={registerMutation.isPending ? "Creating Account..." : "Create Account"}
             type="submit"
-            // disabled={!formData.name || !formData.email || !formData.password }
-            disabled={false}
+            disabled={!isValid || registerMutation.isPending}
           />
         </div>
         <div className="text-center text-sm text-gray-500">
