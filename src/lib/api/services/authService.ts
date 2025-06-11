@@ -1,5 +1,7 @@
+import { toast } from 'sonner';
 import api from '../axios';
 import { AuthResponse } from '@/types/auth';
+import { getCookie } from '@/utils/cookies';
 
 interface RegisterPayload {
   email: string;
@@ -30,8 +32,8 @@ export const authService = {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        accessToken: response.data.accessToken,
-        refreshToken: response.data.refreshToken,
+        accessToken: response.data.data.access_token,
+        refreshToken: response.data.data.refresh_token,
       }),
       credentials: 'include',
     });
@@ -41,16 +43,20 @@ export const authService = {
 
   async logout(): Promise<void> {
     try {
-      await api.post('/auth/logout');
+      await api.post('/auth/logout', {
+        access_token: getCookie('access_token'),
+      });
     } finally {
       // Always clear cookies
       await fetch('/api/auth/tokens', {
         method: 'DELETE',
         credentials: 'include',
       });
+
+      toast.success("Logged out successfully");
       
       // Redirect to login
-      window.location.href = '/login';
+      window.location.href = '/auth/login';
     }
   },
 

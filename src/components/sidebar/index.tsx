@@ -5,6 +5,8 @@ import Image from "next/image"
 import { SidebarItem } from "@/types/sidebar"
 import { useRouter, usePathname } from "next/navigation"
 import { activeItemStyle, activeItemStyleLg, dashboardItemStyle, dashboardItemStyleLg } from "./style"
+import { authService } from "@/lib/api/services/authService"
+import { LogOut } from "lucide-react"
 
 interface DashboardSidebarProps {
   onCollapse: (isCollapsed: boolean) => void
@@ -132,6 +134,16 @@ export default function DashboardSidebar({ onCollapse }: DashboardSidebarProps) 
               />
               <span className={`transition-all duration-300 ${isCollapsed ? 'hidden' : ''}`}>
                 Minimize Menu
+              </span>
+            </button>
+            {/* Sign out button */}
+            <button 
+              onClick={() => authService.logout()}
+              className="flex items-center gap-3 py-4 px-8 hover:cursor-pointer"
+            >
+              <LogOut className="w-6 h-6 rotate-180"/>
+              <span className={`transition-all duration-300 ${isCollapsed ? 'hidden' : ''}`}>
+                Sign Out
               </span>
             </button>
           </div>
