@@ -23,8 +23,6 @@ export const authService = {
       password
     });
 
-    console.log("RESPONSE =>", response);
-
     // Store tokens in HTTP-only cookies
     await fetch('/api/auth/tokens', {
       method: 'POST',
@@ -43,7 +41,6 @@ export const authService = {
 
   async logout(): Promise<void> {
     try {
-      // Call backend logout endpoint
       await api.post('/auth/logout');
     } finally {
       // Always clear cookies

@@ -1,16 +1,14 @@
 import axios, { AxiosError, InternalAxiosRequestConfig } from 'axios';
 
-// Create axios instance
 const api = axios.create({
   baseURL: process.env.NEXT_PUBLIC_API_URL,
   timeout: 10000,
-  withCredentials: true, // Important for sending cookies with requests
+  withCredentials: true,
   headers: {
     'Content-Type': 'application/json',
   },
 });
 
-// Utility to get cookies by name
 const getCookie = (name: string): string | null => {
   if (typeof document === 'undefined') return null;
   const match = document.cookie.match(new RegExp('(^| )' + name + '=([^;]+)'));
@@ -20,10 +18,8 @@ const getCookie = (name: string): string | null => {
 // Request interceptor
 api.interceptors.request.use(
   async (config: InternalAxiosRequestConfig) => {
-    // Get access token from cookie
     const accessToken = getCookie('access_token');
     
-    // Set Authorization header if token exists
     if (accessToken) {
       config.headers.Authorization = `Bearer ${accessToken}`;
     }
