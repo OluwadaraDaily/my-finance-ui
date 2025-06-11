@@ -1,53 +1,80 @@
 "use client"
-import React from "react"
-import { PasswordInput, TextInput } from "@/components/input"
 import { PrimaryButton } from "@/components/button"
-import { redirect } from "next/navigation"
+import { PasswordInput, TextInput } from "@/components/input"
+import { authService } from "@/lib/api/services/authService"
+import { useRouter } from "next/navigation"
+import React from "react"
+import { toast } from "sonner"
+import { useMutation } from "@tanstack/react-query"
+import { zodResolver } from "@hookform/resolvers/zod"
+import { useForm } from "react-hook-form"
+import { z } from "zod"
+
+const loginSchema = z.object({
+  email: z.string().email("Please enter a valid email"),
+  password: z.string().min(8, "Password must be at least 8 characters"),
+})
+
+type LoginFormData = z.infer<typeof loginSchema>
 
 export default function Login() {
-  const [formData, setFormData] = React.useState({
-    email: "",
-    password: "",
+  const router = useRouter()
+  
+  const {
+    register,
+    handleSubmit,
+    formState: { errors, isValid },
+  } = useForm<LoginFormData>({
+    resolver: zodResolver(loginSchema),
+    mode: "onChange",
   })
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target
-    setFormData({ ...formData, [name]: value })
-  }
+  const loginMutation = useMutation({
+    mutationFn: (data: LoginFormData) => authService.login(data.email, data.password),
+    onSuccess: () => {
+      toast.success("Login successful", {
+        description: "Welcome back!",
+      })
+      router.push("/dashboard")
+    },
+    onError: (error: unknown) => {
+      const errorMessage = (error as { response: { data: { detail: string } } }).response?.data?.detail ?? "Login failed"
+      toast.error("Login failed", {
+        description: errorMessage,
+      })
+    },
+  })
 
-  const handleFormSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault()
-    console.log("Form submitted with data:", formData)
-    redirect("/dashboard")
+  const onSubmit = (data: LoginFormData) => {
+    loginMutation.mutate(data)
   }
 
   return (
     <div className="md:w-[560px] w-[90%] mx-auto md:mx-0 bg-white p-8 rounded-lg">
       <h1 className="text-2xl font-bold mb-4">Login</h1>
-      <form onSubmit={handleFormSubmit}>
+      <form onSubmit={handleSubmit(onSubmit)}>
         <div className="my-8 flex flex-col gap-4">
           <TextInput
             label="Email"
             type="email"
-            name="email"
+            {...register("email")}
             placeholder="Enter your email"
-            value={formData.email}
-            onChange={handleChange}
+            error={errors.email?.message}
           />
-          <PasswordInput
-            label="Password"
-            name="password"
-            placeholder="Enter your password"
-            value={formData.password}
-            onChange={handleChange}
-          />
+          <div>
+            <PasswordInput
+              label="Password"
+              {...register("password")}
+              placeholder="Enter your password"
+              error={errors.password?.message}
+            />
+          </div>
         </div>
         <div className="mb-8 w-full">
           <PrimaryButton
-            label="Login"
+            label={loginMutation.isPending ? "Logging in..." : "Login"}
             type="submit"
-            // disabled={!formData.email || !formData.password}
-            disabled={false}
+            disabled={!isValid || loginMutation.isPending}
           />
         </div>
         <div className="text-center text-sm text-gray-500">
