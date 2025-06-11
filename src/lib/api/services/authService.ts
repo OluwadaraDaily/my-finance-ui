@@ -1,6 +1,6 @@
 import { toast } from 'sonner';
 import api from '../axios';
-import { AuthResponse } from '@/types/auth';
+import { APIResponse, AuthResponse, User } from '@/types/auth';
 import { getCookie } from '@/utils/cookies';
 
 interface RegisterPayload {
@@ -63,5 +63,17 @@ export const authService = {
   async refreshToken(): Promise<AuthResponse> {
     const response = await api.post<AuthResponse>('/auth/refresh');
     return response.data;
+  },
+
+  async validateToken(token: string): Promise<boolean> {
+    const response = await api.post('/auth/validate-token', {
+      access_token: token,
+    });
+    return response.status === 200;
+  },
+
+  async getUserInfo(): Promise<APIResponse<User>> {
+    const response = await api.get('/users/me');
+    return response.data as APIResponse<User>;
   }
 }; 

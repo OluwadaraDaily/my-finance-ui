@@ -2,7 +2,7 @@
 import { PrimaryButton } from "@/components/button"
 import { PasswordInput, TextInput } from "@/components/input"
 import { authService } from "@/lib/api/services/authService"
-import { useRouter } from "next/navigation"
+import { useRouter, useSearchParams } from "next/navigation"
 import React from "react"
 import { toast } from "sonner"
 import { useMutation } from "@tanstack/react-query"
@@ -19,6 +19,8 @@ type LoginFormData = z.infer<typeof loginSchema>
 
 export default function Login() {
   const router = useRouter()
+  const searchParams = useSearchParams()
+  const redirectTo = searchParams.get('from') || '/dashboard'
   
   const {
     register,
@@ -35,7 +37,7 @@ export default function Login() {
       toast.success("Login successful", {
         description: "Welcome back!",
       })
-      router.push("/dashboard")
+      router.push(redirectTo)
     },
     onError: (error: unknown) => {
       const errorMessage = (error as { response: { data: { detail: string } } }).response?.data?.detail ?? "Login failed"

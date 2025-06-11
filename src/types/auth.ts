@@ -1,7 +1,10 @@
 export interface User {
   id: string;
   email: string;
-  name?: string;
+  username: string;
+  is_activated: boolean;
+  created_at: Date;
+  updated_at: Date;
 }
 
 export interface AuthResponse {
@@ -10,6 +13,11 @@ export interface AuthResponse {
     accessToken: string;
     refreshToken: string;
   },
+  message: string;
+}
+
+export interface APIResponse<T> {
+  data: T;
   message: string;
 }
 
