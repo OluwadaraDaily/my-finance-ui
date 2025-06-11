@@ -1,16 +1,16 @@
 "use client";
 
 import { IBudget } from "@/types/budgets";
-import { ITransaction } from "@/types/transactions";
+import { Transaction } from "@/lib/api/services/transactions/types";
 import { formatCurrency } from "@/utils/format";
 import Image from "next/image";
 import { useState, useEffect, useRef } from "react";
 import { TertiaryButton } from "../button";
 
-const LATEST_SPENDING_DATA: ITransaction[] = [
-  { name: 'Papa Software', imageUrl: '', amount: -10, date: '16 Aug 2024', category: '' },
-  { name: 'Quebec Services', imageUrl: '', amount: -5, date: '12 Aug 2024', category: '' }, 
-  { name: 'Romeo Cloud Service', imageUrl: '', amount: -10, date: '5 Aug 2024', category: '' },
+const LATEST_SPENDING_DATA: Omit<Transaction, 'id' | 'meta_data' | 'account_id' | 'category_id' | 'sender' | 'pot_id' | 'updated_at' | 'type'>[] = [
+  { recipient: 'Papa Software', amount: -10, created_at: new Date('16 Aug 2024'), description: 'Software subscription', transaction_date: new Date('16 Aug 2024') },
+  { recipient: 'Quebec Services', amount: -5, created_at: new Date('12 Aug 2024'), description: 'Service fee', transaction_date: new Date('12 Aug 2024') },
+  { recipient: 'Romeo Cloud Service', amount: -10, created_at: new Date('5 Aug 2024'), description: 'Cloud storage', transaction_date: new Date('5 Aug 2024') },
 ];
 
 export default function BudgetCard({
@@ -118,17 +118,17 @@ export default function BudgetCard({
             />
           </div>
           <div>
-            {LATEST_SPENDING_DATA.map((transaction: ITransaction, index: number, arr: ITransaction[]) => (
-              <div key={transaction.name}>
+            {LATEST_SPENDING_DATA.map((transaction: Omit<Transaction, 'id' | 'meta_data' | 'account_id' | 'category_id' | 'sender' | 'pot_id' | 'updated_at' | 'type'>, index: number, arr: Omit<Transaction, 'id' | 'meta_data' | 'account_id' | 'category_id' | 'sender' | 'pot_id' | 'updated_at' | 'type'>[]) => (
+              <div key={transaction.recipient}>
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="font-bold text-xs mb-1">{transaction.name}</p>
+                    <p className="font-bold text-xs mb-1">{transaction.recipient}</p>
                   </div>
                   <div>
                     <p className="font-bold text-xs text-grey-900 text-right mb-1">
                       {transaction.amount < 0 ? `-${formatCurrency(Math.abs(transaction.amount))}` : formatCurrency(transaction.amount)}
                     </p>
-                    <p className="text-grey-500 text-xs">{transaction.date}</p>
+                    <p className="text-grey-500 text-xs">{transaction.transaction_date.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}</p>
                   </div>
                 </div>
                 {index !== arr.length - 1 && (

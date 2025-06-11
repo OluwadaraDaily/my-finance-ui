@@ -1,4 +1,4 @@
-import { ITransaction } from "@/types/transactions";
+import { Transaction } from "@/lib/api/services/transactions/types";
 
 const companyNames = [
   "Netflix", "Spotify", "Amazon", "Uber", "Airbnb", "Starbucks", 
@@ -30,22 +30,17 @@ const categories = [
   "Entertainment", "Bills", "Groceries", "Dining Out", "Shopping", "Transportation", "Personal Care", "Education", "Lifestyle", "Shopping", "General"
 ]
 
-export const transactions: ITransaction[] = Array.from({ length: 50 }, (_, index) => {
+export const transactions: Omit<Transaction, 'id' | 'meta_data' | 'account_id' | 'category_id' | 'sender' | 'pot_id' | 'updated_at' | 'type'>[] = Array.from({ length: 50 }, (_, index) => {
   const isCompany = index % 2 === 0
   const name = isCompany 
     ? companyNames[index % companyNames.length]
     : personNames[index % personNames.length]
   
-  const imageNumber = (index % 15) + 1
-  const imageUrl = isCompany 
-    ? `/images/profiles/Logo ${imageNumber}.svg`
-    : `/images/profiles/Person ${imageNumber}.png`
-
   return {
-    name,
-    imageUrl,
+    recipient: name,
     amount: amounts[index % amounts.length],
-    date: dates[index % dates.length],
-    category: categories[index % categories.length]
+    transaction_date: new Date(dates[index % dates.length]),
+    description: categories[index % categories.length],
+    created_at: new Date(dates[index % dates.length])
   }
 })

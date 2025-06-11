@@ -1,28 +1,28 @@
-import { ITransaction } from "@/types/transactions";
+import { Transaction } from "@/lib/api/services/transactions/types";
 import { flexRender, getCoreRowModel, getFilteredRowModel, getSortedRowModel, useReactTable, createColumnHelper } from '@tanstack/react-table';
 import Image from "next/image";
 import { formatCurrency } from "@/utils/format";
 import React from "react";
 
 interface TransactionsTableProps {
-  data: ITransaction[];
+  data: Transaction[];
   globalFilter: string;
   setGlobalFilter: (filter: string) => void;
 }
 
 export default function TransactionsTable({ data, globalFilter, setGlobalFilter }: TransactionsTableProps) {
-  const columnHelper = createColumnHelper<ITransaction>();
+  const columnHelper = createColumnHelper<Transaction>();
 
   const columns = [
-    columnHelper.accessor(row => ({ name: row.name, imageUrl: row.imageUrl }), {
+    columnHelper.accessor(row => ({ name: row.recipient }), {
       id: 'recipient',
       header: () => <span>Recipient/Sender</span>,
       cell: info => {
-        const { name, imageUrl } = info.getValue();
+        const { name } = info.getValue();
         return (
           <div className="flex items-center gap-4">
             <Image
-              src={imageUrl}
+              src={'/icons/transactions.svg'}
               alt={`${name}'s picture`}
               width={40}
               height={40}
@@ -33,20 +33,20 @@ export default function TransactionsTable({ data, globalFilter, setGlobalFilter 
         );
       },
       filterFn: (row, columnId, value) => {
-        const recipient = row.getValue(columnId) as { name: string; imageUrl: string };
+        const recipient = row.getValue(columnId) as { name: string };
         return recipient.name.toLowerCase().includes(value.toLowerCase());
       },
     }),
-    columnHelper.accessor('category', {
+    columnHelper.accessor('description', {
       header: 'Category',
       cell: info => (
         <span className="text-grey-500 text-xs font-normal">{info.getValue()}</span>
       ),
     }),
-    columnHelper.accessor('date', {
+    columnHelper.accessor('transaction_date', {
       header: () => <span>Transaction Date</span>,
       cell: info => (
-        <span className="text-grey-500 text-xs font-normal">{info.getValue()}</span>
+        <span className="text-grey-500 text-xs font-normal">{info.getValue().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}</span>
       ),
     }),
     columnHelper.accessor('amount', {
@@ -70,7 +70,7 @@ export default function TransactionsTable({ data, globalFilter, setGlobalFilter 
     onGlobalFilterChange: setGlobalFilter,
     getCoreRowModel: getCoreRowModel(),
     globalFilterFn: (row, columnId, filterValue) => {
-      const recipient = row.getValue('recipient') as { name: string; imageUrl: string };
+      const recipient = row.getValue('recipient') as { name: string };
       return recipient.name.toLowerCase().includes(filterValue.toLowerCase());
     },
     getFilteredRowModel: getFilteredRowModel(),
@@ -114,7 +114,7 @@ export default function TransactionsTable({ data, globalFilter, setGlobalFilter 
                 <td
                   key={cell.id}
                   className={`py-4 ${
-                    cell.column.id === 'category' || cell.column.id === 'date'
+                    cell.column.id === 'description' || cell.column.id === 'transaction_date'
                       ? 'hidden md:table-cell'
                       : ''
                   } ${cell.column.id === 'recipient' ? 'pl-2' : 'pl-8'}`}
