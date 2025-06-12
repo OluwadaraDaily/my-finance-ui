@@ -1,15 +1,98 @@
+"use client"
+
+import { useQuery } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
-import { TertiaryButton } from "../button";
-import { transactions } from "./data";
-import { ITransaction } from "@/types/transactions";
+import { TertiaryButton, PrimaryButton } from "../button";
 import TransactionItem from "./transaction-item";
+import { transactionsService } from "@/lib/api/services/transactions";
+import { AlertCircle } from "lucide-react";
+import { Transaction } from "@/lib/api/services/transactions/types";
+import Image from "next/image";
 
 export default function TransactionsSummary() {
   const router = useRouter();
   
+  const { data, isLoading, error } = useQuery({
+    queryKey: ['transactions', { skip: 0, limit: 5 }],
+    queryFn: async () => {
+      const response = await transactionsService.getTransactions({
+        skip: 0,
+        limit: 5,
+        sort_by: 'transaction_date',
+        sort_order: 'desc'
+      });
+      console.log("response =>", response)
+      return response.data;
+    }
+  });
+
+  if (isLoading) {
+    return (
+      <div className="bg-white rounded-xl p-8 relative">
+        <div className="flex items-center justify-between mb-8">
+          <div className="h-6 w-32 bg-gray-200 rounded animate-pulse" />
+          <div className="h-6 w-24 bg-gray-200 rounded animate-pulse" />
+        </div>
+        <div className="flex flex-col gap-5">
+          {[...Array(5)].map((_, index) => (
+            <div key={index} className="flex items-center gap-4">
+              <div className="h-12 w-12 bg-gray-200 rounded-full animate-pulse" />
+              <div className="flex-1">
+                <div className="h-4 w-32 bg-gray-200 rounded animate-pulse mb-2" />
+                <div className="h-4 w-24 bg-gray-200 rounded animate-pulse" />
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="bg-white rounded-xl p-8 relative">
+        <div className="p-5 rounded-xl bg-red-50 border border-red-200 text-app-red">
+          <div className="flex items-center gap-2 mb-2">
+            <AlertCircle className="w-5 h-5" />
+            <p className="font-semibold">Error</p>
+          </div>
+          <p className="text-sm text-app-red">
+            {error instanceof Error ? error.message : 'An unexpected error occurred'}
+          </p>
+        </div>
+      </div>
+    );
+  }
+
+  if (!data?.length) {
+    return (
+      <div className="bg-white rounded-xl p-8 relative">
+        <div className="flex items-center justify-between mb-8">
+          <h2 className="text-lg font-semibold">Transactions</h2>
+        </div>
+        <div className="flex flex-col items-center justify-center py-8">
+          <Image
+            src="/icons/transactions.svg"
+            alt=""
+            width={48}
+            height={48}
+            className="mb-4 opacity-50"
+          />
+          <p className="text-grey-500 text-sm mb-4">No transactions found</p>
+          <div className="lg:w-auto md:w-48 sm:w-full">
+            <PrimaryButton
+              label="Create Your First Transaction"
+              onClick={() => router.push("/dashboard/transactions")}
+            />
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   return (
-    <div className="bg-white rounded-xl p-8">
-      <div className="flex items-center justify-between  mb-8">
+    <div className="bg-white rounded-xl p-8 relative">
+      <div className="flex items-center justify-between mb-8">
         <h2 className="text-lg font-semibold">Transactions</h2>
         <TertiaryButton
           label="View All"
@@ -17,18 +100,17 @@ export default function TransactionsSummary() {
         />
       </div>
       <div className="flex flex-col gap-5">
-        {transactions.slice(0, 5).map((transaction: ITransaction, index: number) => (
+        {data.map((transaction: Transaction, index: number) => (
           <TransactionItem
-            key={`${transaction.name}${index}`}
-            imageUrl={transaction.imageUrl}
-            name={transaction.name}
+            key={transaction.id}
+            name={transaction.sender || transaction.recipient}
+            description={transaction.description}
             transactionAmount={transaction.amount}
-            date={transaction.date}
-            showDivider={index === 4 ? false : true}
+            transactionDate={transaction.transaction_date.toString()}
+            showDivider={index === data.length - 1 ? false : true}
           />
         ))}
-
       </div>
     </div>
-  )
+  );
 }

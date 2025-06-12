@@ -1,4 +1,4 @@
-import { ITransaction } from "@/types/transactions";
+import { Transaction, TransactionType } from "@/lib/api/services/transactions/types";
 
 const companyNames = [
   "Netflix", "Spotify", "Amazon", "Uber", "Airbnb", "Starbucks", 
@@ -30,22 +30,24 @@ const categories = [
   "Entertainment", "Bills", "Groceries", "Dining Out", "Shopping", "Transportation", "Personal Care", "Education", "Lifestyle", "Shopping", "General"
 ]
 
-export const transactions: ITransaction[] = Array.from({ length: 50 }, (_, index) => {
-  const isCompany = index % 2 === 0
+export const transactions: Transaction[] = Array.from({ length: 50 }, (_, index) => {
+  const isCompany = index % 2 === 0;
   const name = isCompany 
     ? companyNames[index % companyNames.length]
-    : personNames[index % personNames.length]
+    : personNames[index % personNames.length];
+  const amount = amounts[index % amounts.length];
+  const transactionDate = new Date(dates[index % dates.length]);
   
-  const imageNumber = (index % 15) + 1
-  const imageUrl = isCompany 
-    ? `/images/profiles/Logo ${imageNumber}.svg`
-    : `/images/profiles/Person ${imageNumber}.png`
-
   return {
-    name,
-    imageUrl,
-    amount: amounts[index % amounts.length],
-    date: dates[index % dates.length],
-    category: categories[index % categories.length]
+    id: index + 1,
+    recipient: name,
+    amount: Math.abs(amount), // Ensure amount is positive
+    type: amount < 0 ? TransactionType.DEBIT : TransactionType.CREDIT,
+    transaction_date: transactionDate,
+    description: categories[index % categories.length],
+    meta_data: {},
+    account_id: 1, // Default account ID
+    created_at: transactionDate,
+    updated_at: transactionDate
   }
 })

@@ -1,7 +1,7 @@
 "use client";
 import SearchBar from "@/components/transactions/search-bar";
 import Sort from "@/components/transactions/sort";
-import Filter from "@/components/transactions/filter";
+// import Filter from "@/components/transactions/filter";
 import React, { useState, useMemo } from "react";
 import { transactions } from "@/components/transactions-summary/data";
 import TransactionListMobile from "@/components/transactions/transaction-list-mobile";
@@ -13,7 +13,6 @@ const PER_PAGE = 10;
 export default function TransactionsPage() {
   const [globalFilter, setGlobalFilter] = useState("");
   const [sortOption, setSortOption] = useState("Latest");
-  const [activeCategory, setActiveCategory] = useState("All Transactions");
   const [currentPage, setCurrentPage] = useState(1);
   
   
@@ -24,21 +23,19 @@ export default function TransactionsPage() {
   // Derived state: Filter first, then sort
   const processedData = useMemo(() => {
     // Step 1: Apply filtering
-    const filteredData = activeCategory === "All Transactions"
-      ? [...transactions]
-      : transactions.filter(transaction => transaction.category === activeCategory);
+    const filteredData = [...transactions]
 
     // Step 2: Apply sorting
     return [...filteredData].sort((a, b) => {
       switch (sortOption) {
         case "Latest":
-          return new Date(b.date).getTime() - new Date(a.date).getTime();
+          return new Date(b.created_at).getTime() - new Date(a.created_at).getTime();
         case "Oldest":
-          return new Date(a.date).getTime() - new Date(b.date).getTime();
+          return new Date(a.created_at).getTime() - new Date(b.created_at).getTime();
         case "A to Z":
-          return a.name.localeCompare(b.name);
+          return a.recipient.localeCompare(b.recipient);
         case "Z to A":
-          return b.name.localeCompare(a.name);
+          return b.recipient.localeCompare(a.recipient);
         case "Highest":
           return b.amount - a.amount;
         case "Lowest":
@@ -47,7 +44,7 @@ export default function TransactionsPage() {
           return 0;
       }
     });
-  }, [activeCategory, sortOption]);
+  }, [sortOption]);
 
   const totalPages = Math.ceil((processedData.length * 2) / PER_PAGE);
   console.log("totalPages = ", totalPages);
@@ -56,11 +53,13 @@ export default function TransactionsPage() {
   }
 
   // Get paginated data
-  const paginatedData = useMemo(() => {
-    const startIndex = (currentPage - 1) * PER_PAGE;
-    const endIndex = startIndex + PER_PAGE;
-    return [...processedData, ...processedData].slice(startIndex, endIndex);
-  }, [processedData, currentPage]);
+  // const paginatedData = useMemo(() => {
+  //   const startIndex = (currentPage - 1) * PER_PAGE;
+  //   const endIndex = startIndex + PER_PAGE;
+  //   return [...processedData, ...processedData].slice(startIndex, endIndex);
+  // }, [processedData, currentPage]);
+
+  const paginatedData = [...processedData, ...processedData]
 
   return (
     <div className="w-[95%] md:w-[90%] mx-auto">
@@ -76,7 +75,7 @@ export default function TransactionsPage() {
             </div>
             <div className="flex items-center gap-6 md:flex-[70%] lg:flex-[55%] md:justify-end">
               <Sort onSort={setSortOption} />
-              <Filter onFilter={setActiveCategory} />
+              {/* <Filter onFilter={setActiveCategory} /> */}
             </div>
           </div>
           {/* Mobile List */}

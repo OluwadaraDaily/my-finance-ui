@@ -1,4 +1,4 @@
-import { ITransaction } from "./transactions";
+import { Transaction } from "@/lib/api/services/transactions/types";
 
 export interface IBudget {
   id: string;
@@ -6,5 +6,5 @@ export interface IBudget {
   amount: number;
   spent: number;
   color: string;
-  transactions: ITransaction[];
+  transactions: Transaction[];
 }

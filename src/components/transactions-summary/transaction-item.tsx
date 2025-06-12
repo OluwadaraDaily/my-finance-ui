@@ -2,45 +2,45 @@
 import Image from "next/image"
 import { formatCurrency } from "@/utils/format"
 
-export default function TransactionItem({
-  imageUrl,
-  name,
-  transactionAmount,
-  date,
-  showDivider = true
-}: {
-  imageUrl: string
-  name: string
-  transactionAmount: number
-  date: string
-  showDivider: boolean
-}) {
-  const formattedAmount = formatCurrency(Math.abs(transactionAmount))
+interface TransactionItemProps {
+  imageUrl?: string;
+  name?: string;
+  description: string;
+  transactionAmount: number;
+  transactionDate: string;
+  showDivider?: boolean;
+}
 
+export default function TransactionItem({
+  imageUrl = '/icons/default-transaction.svg',
+  name,
+  description,
+  transactionAmount,
+  transactionDate,
+  showDivider = true
+}: TransactionItemProps) {
   return (
-    <>
+    <div className="relative">
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-4">
-          <div className="w-10 h-10 rounded-[50%]">
-            <Image
-              src={imageUrl}
-              alt={`${name}'s picture`}
-              width={40}
-              height={40}
-            />
+          <Image
+            src={imageUrl}
+            alt=""
+            className="w-12 h-12 rounded-full object-cover"
+          />
+          <div>
+            <p className="font-medium mb-1">{name || description}</p>
+            <p className="text-sm text-grey-500">{new Date(transactionDate).toLocaleDateString()}</p>
           </div>
-          <p className="text-sm font-bold">{name}</p>
         </div>
-        <div>
-          <p className={`text-sm font-bold mb-2 ${transactionAmount < 0 ? 'text-grey-900' : 'text-app-green'}`}>
-            {transactionAmount < 0 ? '-' : '+'}{formattedAmount}
-          </p>
-          <p className="text-xs text-grey-500">{date}</p>
-        </div>
+        <p className={`font-medium ${transactionAmount < 0 ? 'text-app-red' : 'text-green-600'}`}>
+          {transactionAmount < 0 ? '-' : '+'}
+          {formatCurrency(Math.abs(transactionAmount))}
+        </p>
       </div>
       {showDivider && (
-        <div className="w-full border border-grey-100"></div>
+        <div className="absolute bottom-[-20px] left-0 w-full h-[1px] bg-grey-200" />
       )}
-    </>
+    </div>
   )
 }

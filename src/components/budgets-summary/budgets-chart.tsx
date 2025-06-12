@@ -2,19 +2,28 @@
 import { PieChart, Pie, Cell, Label } from 'recharts';
 import { BUDGET_SUMMARY_DATA } from './data';
 import { formatCurrency } from '@/utils/format';
-import { useEffect, useState } from 'react';
+import { useQuery } from '@tanstack/react-query';
+import { budgetService } from '@/lib/api/services/budgets';
 
 const total = 975;
 const spent = 338;
 
 export function BudgetsChart() {
-  const [mounted, setMounted] = useState(false);
 
-  useEffect(() => {
-    setMounted(true);
-  }, []);
+  const { data: budgetSummary, isLoading: isBudgetSummaryLoading } = useQuery({
+    queryKey: ['budget-summary'],
+    queryFn: async () => {
+      const response = await budgetService.getBudgetSummary()
+      return response.data
+    }
+  })
 
-  if (!mounted) return null;
+  console.log("budgetSummary =>", budgetSummary)
+  console.log("isBudgetSummaryLoading =>", isBudgetSummaryLoading)
+
+  if (!budgetSummary?.budgets.length) {
+    return null;
+  }
 
   return (
     <div className="flex flex-col items-center justify-center">
