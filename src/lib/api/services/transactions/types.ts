@@ -69,19 +69,3 @@ export interface TransactionQueryParams {
   recipient?: string;
   sender?: string;
 }
-
-export interface ITransaction {
-  id: number;
-  amount: number;
-  transaction_date: string;
-  description: string;
-  type: string;
-  category_id?: number;
-  budget_id?: number;
-  recipient?: string;
-  sender?: string;
-  meta_data?: Record<string, unknown>;
-  // UI specific fields
-  imageUrl?: string;
-  name?: string;
-}

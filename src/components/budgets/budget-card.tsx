@@ -1,16 +1,49 @@
 "use client";
 
 import { IBudget } from "@/types/budgets";
-import { Transaction } from "@/lib/api/services/transactions/types";
+import { Transaction, TransactionType } from "@/lib/api/services/transactions/types";
 import { formatCurrency } from "@/utils/format";
 import Image from "next/image";
 import { useState, useEffect, useRef } from "react";
 import { TertiaryButton } from "../button";
 
-const LATEST_SPENDING_DATA: Omit<Transaction, 'id' | 'meta_data' | 'account_id' | 'category_id' | 'sender' | 'pot_id' | 'updated_at' | 'type'>[] = [
-  { recipient: 'Papa Software', amount: -10, created_at: new Date('16 Aug 2024'), description: 'Software subscription', transaction_date: new Date('16 Aug 2024') },
-  { recipient: 'Quebec Services', amount: -5, created_at: new Date('12 Aug 2024'), description: 'Service fee', transaction_date: new Date('12 Aug 2024') },
-  { recipient: 'Romeo Cloud Service', amount: -10, created_at: new Date('5 Aug 2024'), description: 'Cloud storage', transaction_date: new Date('5 Aug 2024') },
+const LATEST_SPENDING_DATA: Transaction[] = [
+  {
+    id: 1,
+    recipient: 'Papa Software',
+    amount: -10,
+    type: TransactionType.DEBIT,
+    transaction_date: new Date('16 Aug 2024'),
+    description: 'Software subscription',
+    meta_data: {},
+    account_id: 1,
+    created_at: new Date('16 Aug 2024'),
+    updated_at: new Date('16 Aug 2024')
+  },
+  {
+    id: 2, 
+    recipient: 'Quebec Services',
+    amount: -5,
+    type: TransactionType.DEBIT,
+    transaction_date: new Date('12 Aug 2024'),
+    description: 'Service fee',
+    meta_data: {},
+    account_id: 1,
+    created_at: new Date('12 Aug 2024'),
+    updated_at: new Date('12 Aug 2024')
+  },
+  {
+    id: 3,
+    recipient: 'Romeo Cloud Service', 
+    amount: -10,
+    type: TransactionType.DEBIT,
+    transaction_date: new Date('5 Aug 2024'),
+    description: 'Cloud storage',
+    meta_data: {},
+    account_id: 1,
+    created_at: new Date('5 Aug 2024'),
+    updated_at: new Date('5 Aug 2024')
+  }
 ];
 
 export default function BudgetCard({
@@ -118,7 +151,7 @@ export default function BudgetCard({
             />
           </div>
           <div>
-            {LATEST_SPENDING_DATA.map((transaction: Omit<Transaction, 'id' | 'meta_data' | 'account_id' | 'category_id' | 'sender' | 'pot_id' | 'updated_at' | 'type'>, index: number, arr: Omit<Transaction, 'id' | 'meta_data' | 'account_id' | 'category_id' | 'sender' | 'pot_id' | 'updated_at' | 'type'>[]) => (
+            {LATEST_SPENDING_DATA.map((transaction: Transaction, index: number, arr: Transaction[]) => (
               <div key={transaction.recipient}>
                 <div className="flex items-center justify-between">
                   <div>
