@@ -48,7 +48,7 @@ export default function UnauthorizedPage() {
           <div className="flex flex-col space-y-3">
             <PrimaryButton
               label="Sign in again"
-              onClick={() => router.push('/login')}
+              onClick={() => router.push('/auth/login')}
             />
             
             <SecondaryButton 
