@@ -18,7 +18,7 @@ export default function TransactionListMobile({ data }: { data: Transaction[] })
             />
             <div>
               <div className="font-bold text-base text-grey-900">
-                {transaction.type === "DEBIT" ? "Recipient: " : "Sender: "}{transaction.recipient}
+                {transaction.type === "DEBIT" ? transaction.recipient : transaction.sender}
               </div>
               <div className="text-xs text-grey-500 font-normal mt-1">{transaction.budget?.name || transaction.pot?.name || '-'}</div>
             </div>
