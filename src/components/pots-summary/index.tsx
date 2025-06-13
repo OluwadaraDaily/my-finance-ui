@@ -1,25 +1,22 @@
 "use client"
-import { useQuery } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
 import { TertiaryButton, PrimaryButton } from "../button";
 import Image from "next/image";
 import { IPotItem } from "@/types/pots";
 import PotItem from "./pot-item";
-import { potsService } from "@/lib/api/services/pots";
-import { Pot } from "@/lib/api/services/pots/types";
+import { Pot, PotSummary } from "@/lib/api/services/pots/types";
 import { formatCurrency } from "@/utils/format";
 import { AlertCircle } from "lucide-react";
+import { APIResponse } from "@/types/auth";
 
-export default function PotsSummary() {
+interface PotsSummaryProps {
+  data?: APIResponse<PotSummary>
+  isLoading: boolean
+  error: Error | null
+}
+
+export default function PotsSummary({ data, isLoading, error }: PotsSummaryProps) {
   const router = useRouter();
-  
-  const { data: potSummary, isLoading, error } = useQuery({
-    queryKey: ['potSummary'],
-    queryFn: async () => {
-      const response = await potsService.getPotSummary();
-      return response.data;
-    }
-  });
 
   const transformPotToItem = (pot: Pot): IPotItem => ({
     label: pot.name,
@@ -68,6 +65,8 @@ export default function PotsSummary() {
       </div>
     );
   }
+
+  const potSummary = data?.data
 
   // If there are no pots, show the create pot button
   if (!potSummary?.pots?.length) {

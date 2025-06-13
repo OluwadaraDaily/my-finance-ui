@@ -10,6 +10,17 @@ export default function Providers({ children }: { children: React.ReactNode }) {
     () =>
       new QueryClient({
         defaultOptions: {
+          queries: {
+            staleTime: 5 * 60 * 1000,
+            gcTime: 10 * 60 * 1000,
+            refetchOnWindowFocus: false,
+            retry: (failureCount, error: Error) => {
+              if ('status' in error && (error as { status: number }).status === 404) {
+                return false;
+              }
+              return failureCount < 3;
+            },
+          },
           mutations: {
             retry: 1,
           },

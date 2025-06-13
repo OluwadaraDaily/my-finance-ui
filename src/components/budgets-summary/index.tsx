@@ -4,10 +4,10 @@ import { TertiaryButton, PrimaryButton } from "../button";
 import PotItem from "../pots-summary/pot-item";
 import dynamic from "next/dynamic";
 import BudgetsChartFallback from "./budget-chart-fallback";
-import { budgetService } from "@/lib/api/services/budgets";
-import { useQuery } from "@tanstack/react-query";
 import { Budget } from "@/lib/api/services/budgets/types";
 import Image from "next/image";
+import { APIResponse } from "@/types/auth";
+import { AlertCircle } from "lucide-react";
 
 const BudgetsChart = dynamic(
   () => import("./budgets-chart").then(mod => mod.BudgetsChart),
@@ -17,19 +17,59 @@ const BudgetsChart = dynamic(
   }
 );
 
-export default function BudgetsSummary() {
-  const { data, isLoading } = useQuery({
-    queryKey: ['budgets'],
-    queryFn: async () => {
-      const response = await budgetService.getBudgets({ limit: 4 })
-      return response.data
-    }
-  })
+interface BudgetsSummaryProps {
+  data?: APIResponse<Budget[]>
+  isLoading: boolean
+  error: Error | null
+}
 
+export default function BudgetsSummary({ data, isLoading, error }: BudgetsSummaryProps) {
   const router = useRouter();
 
+  if (isLoading) {
+    return (
+      <div className="bg-white rounded-xl p-8">
+        <div className="flex items-center justify-between mb-5">
+          <div className="h-6 w-20 bg-gray-200 rounded animate-pulse" />
+          <div className="h-6 w-24 bg-gray-200 rounded animate-pulse" />
+        </div>
+        <div className="flex flex-col md:flex-row gap-4">
+          <div className="relative w-[300px] h-[300px] md:flex-[80%]">
+            <BudgetsChartFallback />
+          </div>
+          <div className="grid grid-cols-2 grid-rows-2 gap-4 md:flex-[20%] md:grid-cols-1 md:grid-rows-4">
+            {[...Array(4)].map((_, index) => (
+              <div key={index} className="p-4 bg-gray-100 rounded-lg animate-pulse">
+                <div className="h-4 w-20 bg-gray-200 rounded mb-2" />
+                <div className="h-4 w-16 bg-gray-200 rounded" />
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="bg-white rounded-xl p-8">
+        <div className="p-5 rounded-xl bg-red-50 border border-red-200 text-app-red">
+          <div className="flex items-center gap-2 mb-2">
+            <AlertCircle className="w-5 h-5" />
+            <p className="font-semibold">Error loading budgets</p>
+          </div>
+          <p className="text-sm text-app-red">
+            {error instanceof Error ? error.message : 'An unexpected error occurred'}
+          </p>
+        </div>
+      </div>
+    );
+  }
+
+  const budgets = data?.data
+
   // If there are no budgets, show the create budget button
-  if (!data?.length) {
+  if (!budgets?.length) {
     return (
       <div className="bg-white rounded-xl p-8">
         <div className="flex items-center justify-between mb-5">
@@ -69,17 +109,15 @@ export default function BudgetsSummary() {
           <BudgetsChart />
         </div>
         <div className="grid grid-cols-2 grid-rows-2 gap-4 md:flex-[20%] md:grid-cols-1 md:grid-rows-4">
-          {
-            data?.map((item: Budget) => (
-              <PotItem
-                key={item.id}
-                label={item.name}
-                amount={item.total_amount}
-                color={"#000000"}
-                loading={isLoading}
-              />
-            ))
-          }
+          {budgets.map((item: Budget) => (
+            <PotItem
+              key={item.id}
+              label={item.name}
+              amount={item.total_amount}
+              color={"#000000"}
+              loading={false}
+            />
+          ))}
         </div>
       </div>
     </div>

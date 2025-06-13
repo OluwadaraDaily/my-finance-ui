@@ -1,21 +1,17 @@
 "use client"
 
-import { useQuery } from "@tanstack/react-query"
-import { transactionsService } from "@/lib/api/services/transactions"
 import { formatCurrency } from "@/utils/format"
 import { AlertCircle } from "lucide-react"
+import { APIResponse } from "@/types/auth"
+import { TransactionSummary } from "@/lib/api/services/transactions/types"
 
-export default function OverviewSummary() {
-  const fetchTransactionSummary = async () => {
-    const response = await transactionsService.getTransactionSummary()
-    return response.data
-  }
+interface OverviewSummaryProps {
+  data?: APIResponse<TransactionSummary>
+  isLoading: boolean
+  error: Error | null
+}
 
-  const { data: summary, isLoading, error } = useQuery({
-    queryKey: ['transactionSummary'],
-    queryFn: fetchTransactionSummary,
-  })
-
+export default function OverviewSummary({ data, isLoading, error }: OverviewSummaryProps) {
   if (isLoading) {
     return (
       <div className="flex flex-col md:flex-row md:gap-6">
@@ -48,6 +44,8 @@ export default function OverviewSummary() {
       </div>
     )
   }
+
+  const summary = data?.data
   
   return (
     <div className="flex flex-col md:flex-row md:gap-6">
