@@ -3,12 +3,17 @@ import SearchBar from "@/components/transactions/search-bar";
 import Sort from "@/components/transactions/sort";
 // import Filter from "@/components/transactions/filter";
 import React, { useState, useMemo } from "react";
-import { transactions } from "@/components/transactions-summary/data";
+// import { transactions } from "@/components/transactions-summary/data";
 import TransactionListMobile from "@/components/transactions/transaction-list-mobile";
 import TransactionsTable from "@/components/transactions/transactions-table";
 import Pagination from "@/components/pagination";
 import PrimaryButton from "@/components/button/primary-btn";
 import AddTransactionModal from "@/components/transactions/add-transaction-modal";
+import { useQuery } from "@tanstack/react-query";
+import { transactionsService } from "@/lib/api/services/transactions";
+import { BrushCleaning } from "lucide-react";
+import { Transaction } from "@/lib/api/services/transactions/types";
+
 
 const PER_PAGE = 10;  
 
@@ -17,7 +22,14 @@ export default function TransactionsPage() {
   const [sortOption, setSortOption] = useState("Latest");
   const [currentPage, setCurrentPage] = useState(1);
   const [isAddTransactionModalOpen, setIsAddTransactionModalOpen] = useState(false);
-  
+
+  const { data: transactionsResponse } = useQuery({
+    queryKey: ["transactions"],
+    queryFn: () => transactionsService.getTransactions(),
+  });
+
+  const transactions: Transaction[] = useMemo(() => transactionsResponse?.data || [], [transactionsResponse]);
+  console.log("transactions =>", transactions);
   
   const handleSearch = (search: string) => {
     setGlobalFilter(String(search));
@@ -32,9 +44,9 @@ export default function TransactionsPage() {
     return [...filteredData].sort((a, b) => {
       switch (sortOption) {
         case "Latest":
-          return new Date(b.created_at).getTime() - new Date(a.created_at).getTime();
+          return new Date(b.transaction_date).getTime() - new Date(a.transaction_date).getTime();
         case "Oldest":
-          return new Date(a.created_at).getTime() - new Date(b.created_at).getTime();
+          return new Date(a.transaction_date).getTime() - new Date(b.transaction_date).getTime();
         case "A to Z":
           return a.recipient.localeCompare(b.recipient);
         case "Z to A":
@@ -47,70 +59,90 @@ export default function TransactionsPage() {
           return 0;
       }
     });
-  }, [sortOption]);
+  }, [sortOption, transactions]);
 
   const totalPages = Math.ceil((processedData.length * 2) / PER_PAGE);
-  console.log("totalPages = ", totalPages);
   const handlePageChange = (page: number) => {
     setCurrentPage(page);
   }
 
   // Get paginated data
-  // const paginatedData = useMemo(() => {
-  //   const startIndex = (currentPage - 1) * PER_PAGE;
-  //   const endIndex = startIndex + PER_PAGE;
-  //   return [...processedData, ...processedData].slice(startIndex, endIndex);
-  // }, [processedData, currentPage]);
+  const paginatedData = useMemo(() => {
+    const startIndex = (currentPage - 1) * PER_PAGE;
+    const endIndex = startIndex + PER_PAGE;
+    return processedData.slice(startIndex, endIndex);
+  }, [processedData, currentPage]);
 
-  const paginatedData = [...processedData, ...processedData]
+  const PageHeader = () => (
+    <div className="flex items-center justify-between mb-8">
+      <h1 className="text-xl font-semibold">Transactions</h1>
+      <div>
+        <PrimaryButton
+          label="+ Add Transaction"
+          onClick={() => setIsAddTransactionModalOpen(true)}
+        />
+      </div>
+    </div>
+  );
+
+  const EmptyState = () => (
+    <div className="py-12 bg-white rounded-xl">
+      <div className="w-[90%] mx-auto text-center">
+        <BrushCleaning
+          className="w-[100px] h-[100px] mx-auto mb-6 text-grey-900"
+          strokeWidth={1}
+        />
+        <h2 className="text-xl font-semibold mb-2">No Transactions Yet</h2>
+        <p className="text-grey-500 mb-6">
+          Start tracking your finances by adding your first transaction.
+        </p>
+      </div>
+    </div>
+  );
+
+  const TransactionList = () => (
+    <div className="py-6 bg-white rounded-xl">
+      <div className="w-[90%] mx-auto">
+        <div className="flex items-center gap-4 md:gap-6 justify-between mb-8">
+          <div className="md:flex-[30%] lg:flex-[45%]">
+            <SearchBar
+              type="transaction"
+              onSearch={handleSearch}
+            />
+          </div>
+          <div className="flex items-center gap-6 md:flex-[70%] lg:flex-[55%] md:justify-end">
+            <Sort onSort={setSortOption} />
+            {/* <Filter onFilter={setActiveCategory} /> */}
+          </div>
+        </div>
+        {/* Mobile List */}
+        <div className="block md:hidden">
+          <TransactionListMobile data={paginatedData} />
+        </div>
+        {/* Table for md+ */}
+        <div className="hidden md:block mb-6">
+          <TransactionsTable
+            data={paginatedData}
+            globalFilter={globalFilter}
+            setGlobalFilter={setGlobalFilter}
+          />
+        </div>
+        <div className="mt-6">
+          <Pagination
+            currentPage={currentPage}
+            totalPages={totalPages}
+            onPageChange={handlePageChange}
+          />
+        </div>
+      </div>
+    </div>
+  );
 
   return (
     <>
       <div className="w-[95%] md:w-[90%] mx-auto">
-        <div className="flex items-center justify-between mb-8">
-          <h1 className="text-xl font-semibold">Transactions</h1>
-          <div>
-            <PrimaryButton
-              label="+ Add Transaction"
-              onClick={() => setIsAddTransactionModalOpen(true)}
-            />
-          </div>
-        </div>
-        <div className="py-6 bg-white rounded-xl">
-          <div className="w-[90%] mx-auto">
-            <div className="flex items-center gap-4 md:gap-6 justify-between mb-8">
-              <div className="md:flex-[30%] lg:flex-[45%]">
-                <SearchBar
-                  type="transaction"
-                  onSearch={handleSearch}
-                />
-              </div>
-              <div className="flex items-center gap-6 md:flex-[70%] lg:flex-[55%] md:justify-end">
-                <Sort onSort={setSortOption} />
-                {/* <Filter onFilter={setActiveCategory} /> */}
-              </div>
-            </div>
-            {/* Mobile List */}
-            <div className="block md:hidden">
-              <TransactionListMobile data={paginatedData} />
-            </div>
-            {/* Table for md+ */}
-            <div className="hidden md:block mb-6">
-              <TransactionsTable
-                data={paginatedData}
-                globalFilter={globalFilter}
-                setGlobalFilter={setGlobalFilter}
-              />
-            </div>
-            <div className="mt-6">
-              <Pagination
-                currentPage={currentPage}
-                totalPages={totalPages}
-                onPageChange={handlePageChange}
-              />
-            </div>
-          </div>
-        </div>
+        <PageHeader />
+        {transactions.length === 0 ? <EmptyState /> : <TransactionList />}
       </div>
       <AddTransactionModal
         isOpen={isAddTransactionModalOpen}

@@ -1,6 +1,7 @@
 import Image from "next/image";
 import { Transaction } from "@/lib/api/services/transactions/types";
 import { formatCurrency } from "@/utils/format";
+import { parseDateFromAPI } from "@/utils/date";
 
 export default function TransactionListMobile({ data }: { data: Transaction[] }) {
   return (
@@ -24,7 +25,7 @@ export default function TransactionListMobile({ data }: { data: Transaction[] })
             <span className={`font-bold text-base ${transaction.amount < 0 ? 'text-grey-900' : 'text-app-green'}`}>
               {transaction.amount < 0 ? '-' : '+'}{formatCurrency(Math.abs(transaction.amount))}
             </span>
-            <span className="text-xs text-grey-500 font-normal mt-1">{transaction.transaction_date.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}</span>
+            <span className="text-xs text-grey-500 font-normal mt-1">{parseDateFromAPI(transaction.transaction_date.toString()).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}</span>
           </div>
         </li>
       ))}

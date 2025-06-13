@@ -1,3 +1,6 @@
+import { Budget } from "../budgets/types";
+import { Pot } from "../pots/types";
+
 export enum TransactionType {
   DEBIT = "DEBIT",
   CREDIT = "CREDIT",
@@ -27,8 +30,10 @@ export interface Transaction {
   category_id?: number;
   sender?: string;
   budget_id?: number;
+  budget?: Budget;
   created_at: Date;
   pot_id?: number;
+  pot?: Pot;
   updated_at: Date;
 }
 
