@@ -14,7 +14,7 @@ export default function AddPotModal({
   const [formData, setFormData] = useState({
     potName: "",
     target: "",
-    colorTag: COLOR_TAG_OPTIONS[0].label,
+    colorTag: COLOR_TAG_OPTIONS[0].value,
   });
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
@@ -60,9 +60,9 @@ export default function AddPotModal({
           <SelectInput
             label="Color Tag"
             name="color-tag"
-            options={COLOR_TAG_OPTIONS.map((option) => option.label)}
+            options={COLOR_TAG_OPTIONS}
             value={formData.colorTag}
-            onChange={(value) => setFormData({ ...formData, colorTag: value })}
+            onChange={(e) => setFormData({ ...formData, colorTag: e.target.value })}
             withColorTag
           />
           <div className="w-full">

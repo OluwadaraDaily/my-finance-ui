@@ -66,9 +66,9 @@ export default function EditBudgetModal({
           <SelectInput
             label="Budget Category"
             name="category"
-            options={BUDGET_CATEGORY_OPTIONS.map((option) => option.label)}
+            options={BUDGET_CATEGORY_OPTIONS}
             value={formData.budgetCategory}
-            onChange={(value) => setFormData({ ...formData, budgetCategory: value })}
+            onChange={(e) => setFormData({ ...formData, budgetCategory: e.target.value })}
           />
           <TextInput
             label="Maximum Spending"
@@ -84,9 +84,9 @@ export default function EditBudgetModal({
           <SelectInput
             label="Color Tag"
             name="color-tag"
-            options={COLOR_TAG_OPTIONS.map((option) => option.label)}
-            value={COLOR_TAG_OPTIONS.find(option => option.value === formData.colorTag)?.label || COLOR_TAG_OPTIONS[0].label}
-            onChange={(value) => setFormData({ ...formData, colorTag: value })}
+            options={COLOR_TAG_OPTIONS}
+            value={formData.colorTag}
+            onChange={(e) => setFormData({ ...formData, colorTag: e.target.value })}
             withColorTag
           />
           <PrimaryButton

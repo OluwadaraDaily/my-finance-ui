@@ -9,6 +9,7 @@ export interface Budget {
   user_id: number;
   spent_amount: number;
   remaining_amount: number;
+  color: string;
   is_active: boolean;
   is_deleted: boolean;
   created_at: Date;
@@ -19,9 +20,10 @@ export interface ICreateBudget {
   name: string;
   description?: string;
   total_amount: number;
-  category_id: number;
+  category_id?: number;
   start_date: Date;
   end_date: Date;
+  color: string;
 }
 
 export interface IUpdateBudget {
@@ -32,6 +34,7 @@ export interface IUpdateBudget {
   start_date?: Date;
   end_date?: Date;
   is_active?: boolean;
+  color?: string;
 }
 
 export interface BudgetSummary {
