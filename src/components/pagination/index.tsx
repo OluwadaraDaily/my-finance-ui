@@ -130,7 +130,7 @@ export default function Pagination({
       <div>
         <button
           type="button"
-          className={`rounded-lg bg-transparent border border-beige-500 min-h-10 min-w-10 md:px-4 flex items-center justify-center gap-2 cursor-pointer ${
+          className={`rounded-lg bg-transparent border border-beige-500 min-h-10 min-w-10 md:px-4 flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed ${
             currentPage === 1 ? "opacity-50 cursor-not-allowed" : ""
           }`}
           onClick={handlePreviousPage}
@@ -151,7 +151,7 @@ export default function Pagination({
       <div>
         <button
           type="button"
-          className={`rounded-lg bg-transparent border border-beige-500 min-h-10 min-w-10 md:px-4 flex items-center justify-center gap-2 cursor-pointer ${
+          className={`rounded-lg bg-transparent border border-beige-500 min-h-10 min-w-10 md:px-4 flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed ${
             currentPage === totalPages ? "opacity-50 cursor-not-allowed" : ""
           }`}
           onClick={handleNextPage}

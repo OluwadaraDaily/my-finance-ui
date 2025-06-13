@@ -65,9 +65,9 @@ export default function EditPotModal({
         <SelectInput
           label="Color Tag"
           name="color-tag"
-          options={COLOR_TAG_OPTIONS.map((option) => option.label)}
-          value={COLOR_TAG_OPTIONS.find(option => option.value === formData.color)?.label || COLOR_TAG_OPTIONS[0].label}
-          onChange={(value: string) => setFormData({ ...formData, color: value })}
+          options={COLOR_TAG_OPTIONS}
+          value={formData.color}
+          onChange={(e) => setFormData({ ...formData, color: e.target.value })}
           withColorTag
         />
         <div className="w-full">

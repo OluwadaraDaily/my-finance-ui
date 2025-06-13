@@ -12,6 +12,8 @@ import { useState, useEffect } from "react";
 import { SPENDING_SUMMARY_ITEMS } from "@/data/budget";
 import EditBudgetModal from "@/components/budgets/edit-budget-modal";
 import DeleteBudgetModal from "@/components/budgets/delete-budget-modal";
+// import { useQuery } from "@tanstack/react-query";
+// import { budgetService } from "@/lib/api/services/budgets";
 
 
 const BudgetsChart = dynamic(
@@ -28,6 +30,11 @@ export default function BudgetsPage() {
   const [isDeleteBudgetModalOpen, setIsDeleteBudgetModalOpen] = useState(false);
   const [selectedBudget, setSelectedBudget] = useState<IBudget | null>(null);
   const [budgets, setBudgets] = useState<IBudget[]>(BUDGET_DATA);
+
+  // const { data: budgets, isLoading } = useQuery({
+  //   queryKey: ["budgets"],
+  //   queryFn: () => budgetService.getBudgets(),
+  // });
   
   useEffect(() => {
     const handleFetchBudgets = () => {

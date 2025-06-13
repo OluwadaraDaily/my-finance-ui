@@ -24,6 +24,8 @@ export default function TransactionItem({
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-4">
           <Image
+            width={48}
+            height={48}
             src={imageUrl}
             alt=""
             className="w-12 h-12 rounded-full object-cover"

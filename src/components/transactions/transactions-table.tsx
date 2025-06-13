@@ -14,39 +14,46 @@ export default function TransactionsTable({ data, globalFilter, setGlobalFilter 
   const columnHelper = createColumnHelper<Transaction>();
 
   const columns = [
-    columnHelper.accessor(row => ({ name: row.recipient }), {
+    columnHelper.accessor(row => ({ recipient: row.recipient, sender: row.sender, type: row.type }), {
       id: 'recipient',
       header: () => <span>Recipient/Sender</span>,
       cell: info => {
-        const { name } = info.getValue();
+        const { recipient, sender, type } = info.getValue();
         return (
           <div className="flex items-center gap-4">
             <Image
               src={'/icons/transactions.svg'}
-              alt={`${name}'s picture`}
+              alt={`${type === "DEBIT" ? recipient : sender}'s picture`}
               width={40}
               height={40}
               className="rounded-[50%]"
             />
-            <span className="font-bold text-sm">{name}</span>
+            <span className="font-bold text-sm">{type === "DEBIT" ? recipient : sender}</span>
           </div>
         );
       },
       filterFn: (row, columnId, value) => {
-        const recipient = row.getValue(columnId) as { name: string };
-        return recipient.name.toLowerCase().includes(value.toLowerCase());
+        const recipient = row.getValue(columnId) as { recipient: string, sender: string };
+        return recipient.recipient.toLowerCase().includes(value.toLowerCase()) || recipient.sender.toLowerCase().includes(value.toLowerCase());
       },
     }),
-    columnHelper.accessor('description', {
+    columnHelper.accessor(row => ({ budget: row.budget, pot: row.pot }), {
+      id: 'category',
       header: 'Category',
-      cell: info => (
-        <span className="text-grey-500 text-xs font-normal">{info.getValue()}</span>
-      ),
+      cell: info => {
+        const { budget, pot } = info.getValue();
+        const categoryName = budget?.name || pot?.name || '-';
+        return (
+          <span className="text-grey-500 text-xs font-normal">{categoryName}</span>
+        );
+      },
     }),
     columnHelper.accessor('transaction_date', {
       header: () => <span>Transaction Date</span>,
       cell: info => (
-        <span className="text-grey-500 text-xs font-normal">{info.getValue().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}</span>
+        <span className="text-grey-500 text-xs font-normal">
+          {new Date(info.getValue()).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
+        </span>
       ),
     }),
     columnHelper.accessor('amount', {
@@ -55,8 +62,8 @@ export default function TransactionsTable({ data, globalFilter, setGlobalFilter 
         const amount = info.getValue();
         const formattedAmount = formatCurrency(Math.abs(amount));
         return (
-          <span className={`font-bold text-sm ${amount < 0 ? 'text-grey-900' : 'text-app-green'}`}>
-            {amount < 0 ? '-' : '+'}{formattedAmount}
+          <span className={`font-bold text-sm ${info.row.original.type === "DEBIT" ? 'text-grey-900' : 'text-app-green'}`}>
+            {info.row.original.type === "DEBIT" ? '-' : '+'}{formattedAmount}
           </span>
         );
       },
@@ -70,8 +77,8 @@ export default function TransactionsTable({ data, globalFilter, setGlobalFilter 
     onGlobalFilterChange: setGlobalFilter,
     getCoreRowModel: getCoreRowModel(),
     globalFilterFn: (row, columnId, filterValue) => {
-      const recipient = row.getValue('recipient') as { name: string };
-      return recipient.name.toLowerCase().includes(filterValue.toLowerCase());
+      const name = row.getValue('recipient') as { recipient: string, sender: string };
+      return name[row.original.type === "DEBIT" ? "recipient" : "sender"].toLowerCase().includes(filterValue.toLowerCase());
     },
     getFilteredRowModel: getFilteredRowModel(),
     getSortedRowModel: getSortedRowModel(),
