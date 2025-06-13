@@ -11,19 +11,21 @@ export default function TransactionListMobile({ data }: { data: Transaction[] })
           <div className="flex items-center gap-4">
             <Image
               src={'/icons/transactions.svg'}
-              alt={transaction.description}
+              alt={transaction.type === "DEBIT" ? `Recipient: ${transaction.recipient}` : `Sender: ${transaction.recipient}`}
               width={40}
               height={40}
               className="rounded-full"
             />
             <div>
-              <div className="font-bold text-base text-grey-900">{transaction.recipient}</div>
-              <div className="text-xs text-grey-500 font-normal mt-1">{transaction.description}</div>
+              <div className="font-bold text-base text-grey-900">
+                {transaction.type === "DEBIT" ? "Recipient: " : "Sender: "}{transaction.recipient}
+              </div>
+              <div className="text-xs text-grey-500 font-normal mt-1">{transaction.budget?.name || transaction.pot?.name || '-'}</div>
             </div>
           </div>
           <div className="flex flex-col items-end min-w-[100px]">
-            <span className={`font-bold text-base ${transaction.amount < 0 ? 'text-grey-900' : 'text-app-green'}`}>
-              {transaction.amount < 0 ? '-' : '+'}{formatCurrency(Math.abs(transaction.amount))}
+            <span className={`font-bold text-base ${transaction.type === "DEBIT" ? 'text-grey-900' : 'text-app-green'}`}>
+              {transaction.type === "DEBIT" ? '-' : '+'}{formatCurrency(Math.abs(transaction.amount))}
             </span>
             <span className="text-xs text-grey-500 font-normal mt-1">{parseDateFromAPI(transaction.transaction_date.toString()).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}</span>
           </div>

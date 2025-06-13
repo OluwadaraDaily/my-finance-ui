@@ -18,7 +18,6 @@ import { Transaction } from "@/lib/api/services/transactions/types";
 const PER_PAGE = 10;  
 
 export default function TransactionsPage() {
-  const [globalFilter, setGlobalFilter] = useState("");
   const [sortOption, setSortOption] = useState("Latest");
   const [currentPage, setCurrentPage] = useState(1);
   const [isAddTransactionModalOpen, setIsAddTransactionModalOpen] = useState(false);
@@ -31,17 +30,9 @@ export default function TransactionsPage() {
   const transactions: Transaction[] = useMemo(() => transactionsResponse?.data || [], [transactionsResponse]);
   console.log("transactions =>", transactions);
   
-  const handleSearch = (search: string) => {
-    setGlobalFilter(String(search));
-  }
-
-  // Derived state: Filter first, then sort
+  // Derived state: Apply sorting only
   const processedData = useMemo(() => {
-    // Step 1: Apply filtering
-    const filteredData = [...transactions]
-
-    // Step 2: Apply sorting
-    return [...filteredData].sort((a, b) => {
+    return [...transactions].sort((a, b) => {
       switch (sortOption) {
         case "Latest":
           return new Date(b.transaction_date).getTime() - new Date(a.transaction_date).getTime();
@@ -100,43 +91,48 @@ export default function TransactionsPage() {
     </div>
   );
 
-  const TransactionList = () => (
-    <div className="py-6 bg-white rounded-xl">
-      <div className="w-[90%] mx-auto">
-        <div className="flex items-center gap-4 md:gap-6 justify-between mb-8">
-          <div className="md:flex-[30%] lg:flex-[45%]">
-            <SearchBar
-              type="transaction"
-              onSearch={handleSearch}
+  const TransactionList = () => {
+    const [tableFilter, setTableFilter] = useState("");
+    
+    return (
+      <div className="py-6 bg-white rounded-xl">
+        <div className="w-[90%] mx-auto">
+          <div className="flex items-center gap-4 md:gap-6 justify-between mb-8">
+            <div className="md:flex-[30%] lg:flex-[45%]">
+              <SearchBar
+                type="transaction"
+                onSearch={setTableFilter}
+                value={tableFilter}
+              />
+            </div>
+            <div className="flex items-center gap-6 md:flex-[70%] lg:flex-[55%] md:justify-end">
+              <Sort onSort={setSortOption} />
+              {/* <Filter onFilter={setActiveCategory} /> */}
+            </div>
+          </div>
+          {/* Mobile List */}
+          <div className="block md:hidden">
+            <TransactionListMobile data={paginatedData} />
+          </div>
+          {/* Table for md+ */}
+          <div className="hidden md:block mb-6">
+            <TransactionsTable
+              data={paginatedData}
+              globalFilter={tableFilter}
+              setGlobalFilter={setTableFilter}
             />
           </div>
-          <div className="flex items-center gap-6 md:flex-[70%] lg:flex-[55%] md:justify-end">
-            <Sort onSort={setSortOption} />
-            {/* <Filter onFilter={setActiveCategory} /> */}
+          <div className="mt-6">
+            <Pagination
+              currentPage={currentPage}
+              totalPages={totalPages}
+              onPageChange={handlePageChange}
+            />
           </div>
         </div>
-        {/* Mobile List */}
-        <div className="block md:hidden">
-          <TransactionListMobile data={paginatedData} />
-        </div>
-        {/* Table for md+ */}
-        <div className="hidden md:block mb-6">
-          <TransactionsTable
-            data={paginatedData}
-            globalFilter={globalFilter}
-            setGlobalFilter={setGlobalFilter}
-          />
-        </div>
-        <div className="mt-6">
-          <Pagination
-            currentPage={currentPage}
-            totalPages={totalPages}
-            onPageChange={handlePageChange}
-          />
-        </div>
       </div>
-    </div>
-  );
+    );
+  };
 
   return (
     <>
@@ -149,5 +145,5 @@ export default function TransactionsPage() {
         setIsOpen={setIsAddTransactionModalOpen}
       />
     </>
-  )
+  );
 }

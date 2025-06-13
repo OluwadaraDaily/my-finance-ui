@@ -14,27 +14,27 @@ export default function TransactionsTable({ data, globalFilter, setGlobalFilter 
   const columnHelper = createColumnHelper<Transaction>();
 
   const columns = [
-    columnHelper.accessor(row => ({ name: row.recipient }), {
+    columnHelper.accessor(row => ({ recipient: row.recipient, sender: row.sender, type: row.type }), {
       id: 'recipient',
       header: () => <span>Recipient/Sender</span>,
       cell: info => {
-        const { name } = info.getValue();
+        const { recipient, sender, type } = info.getValue();
         return (
           <div className="flex items-center gap-4">
             <Image
               src={'/icons/transactions.svg'}
-              alt={`${name}'s picture`}
+              alt={`${type === "DEBIT" ? recipient : sender}'s picture`}
               width={40}
               height={40}
               className="rounded-[50%]"
             />
-            <span className="font-bold text-sm">{name}</span>
+            <span className="font-bold text-sm">{type === "DEBIT" ? recipient : sender}</span>
           </div>
         );
       },
       filterFn: (row, columnId, value) => {
-        const recipient = row.getValue(columnId) as { name: string };
-        return recipient.name.toLowerCase().includes(value.toLowerCase());
+        const recipient = row.getValue(columnId) as { recipient: string, sender: string };
+        return recipient.recipient.toLowerCase().includes(value.toLowerCase()) || recipient.sender.toLowerCase().includes(value.toLowerCase());
       },
     }),
     columnHelper.accessor(row => ({ budget: row.budget, pot: row.pot }), {
@@ -77,8 +77,8 @@ export default function TransactionsTable({ data, globalFilter, setGlobalFilter 
     onGlobalFilterChange: setGlobalFilter,
     getCoreRowModel: getCoreRowModel(),
     globalFilterFn: (row, columnId, filterValue) => {
-      const recipient = row.getValue('recipient') as { name: string };
-      return recipient.name.toLowerCase().includes(filterValue.toLowerCase());
+      const name = row.getValue('recipient') as { recipient: string, sender: string };
+      return name[row.original.type === "DEBIT" ? "recipient" : "sender"].toLowerCase().includes(filterValue.toLowerCase());
     },
     getFilteredRowModel: getFilteredRowModel(),
     getSortedRowModel: getSortedRowModel(),
