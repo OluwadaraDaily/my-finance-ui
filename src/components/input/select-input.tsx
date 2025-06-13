@@ -5,7 +5,7 @@ import { ChevronDown } from "lucide-react";
 import { useState, forwardRef } from "react";
 
 // Define option type for flexibility
-type Option = string | { label: string; value: string };
+type Option = string | { label: string; value: string | number };
 
 type SelectInputProps = {
   label: string;
@@ -39,7 +39,7 @@ const SelectInput = forwardRef<HTMLSelectElement, SelectInputProps>(
   ) => {
     // Helper functions to handle both string and object options
     const getOptionValue = (option: Option): string => {
-      return typeof option === 'string' ? option : option.value;
+      return typeof option === 'string' ? option : option.value.toString();
     };
 
     const getOptionLabel = (option: Option): string => {

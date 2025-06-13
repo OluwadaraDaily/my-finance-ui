@@ -10,7 +10,6 @@ export interface ICreateTransaction {
   type: TransactionType;
   transaction_date: Date;
   meta_data?: Record<string, unknown>;
-  category_id?: number;
   budget_id?: number;
   pot_id?: number;
   sender?: string;

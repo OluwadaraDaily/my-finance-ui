@@ -1,20 +1,26 @@
-import { useForm } from "react-hook-form";
+import { useForm, Controller } from "react-hook-form";
 import Modal from "../modal";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { TextInput, SelectInput } from "../input";
+import { TextInput, SelectInput, TextArea } from "../input";
 import { PrimaryButton } from "../button";
+import { useCategoriesData } from "@/hooks/useCategoriesData";
+import { useMutation } from "@tanstack/react-query";
+import { formatFormDatesForAPI } from "@/utils/date";
+import { transactionsService } from "@/lib/api/services/transactions";
+import { TransactionType } from "@/lib/api/services/transactions/types";
+import { toast } from "sonner";
+
 
 const addTransactionSchema = z.object({
-  description: z.string().min(1, "Description is required"),
+  description: z.string().optional(),
   amount: z.number().min(1, "Amount is required"),
-  type: z.enum(["DEBIT", "CREDIT"]),
-  transaction_date: z.string().min(1, "Transaction date is required"),
-  category_id: z.number().min(1, "Category is required").optional(),
-  budget_id: z.number().min(1, "Budget is required").optional(),
-  pot_id: z.number().min(1, "Pot is required").optional(),
-  sender: z.string().min(1, "Sender is required").optional(),
-  recipient: z.string().min(1, "Recipient is required").optional(),
+  type: z.nativeEnum(TransactionType),
+  transaction_date: z.date(),
+  budget_id: z.number().optional(),
+  pot_id: z.number().optional(),
+  sender: z.string().optional(),
+  recipient: z.string().optional(),
 })
 
 type AddTransactionFormData = z.infer<typeof addTransactionSchema>;
@@ -27,16 +33,42 @@ const AddTransactionModal = (
   const {
     register,
     handleSubmit,
+    watch,
+    control,
+    reset,
     formState: { errors, isValid },
   } = useForm<AddTransactionFormData>({
     resolver: zodResolver(addTransactionSchema),
     mode: "onChange",
   })
 
+  const transactionType = watch("type");
+
+  const { budgets, pots } = useCategoriesData();
+
+  const { mutate: createTransaction, isPending } = useMutation({
+    mutationFn: async (data: AddTransactionFormData) => {
+      const apiData = formatFormDatesForAPI(data, ['transaction_date']);
+      const response = await transactionsService.createTransaction(apiData);
+      return response;
+    },
+    onSuccess: () => {
+      setIsOpen(false);
+      // Bubble up an event to inform parent component to refetch transactions
+      const event = new CustomEvent("fetchTransactions");
+      document.dispatchEvent(event);
+      toast.success("Transaction created successfully");
+      reset();
+    },
+    onError: (error) => {
+      toast.error("Failed to create transaction", {
+        description: error.message || "An error occurred while creating the transaction",
+      });
+    },
+  });
+
   const onSubmit = (data: AddTransactionFormData) => {
-    console.log("Form data:", data);
-    // TODO: Handle form submission
-    setIsOpen(false);
+    createTransaction(data);
   };
 
   return (
@@ -50,12 +82,13 @@ const AddTransactionModal = (
           Record any financial transaction like payments, purchases, or transfers. You can add transactions to your budget or savings pot, including deposits and withdrawals.
         </p>
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-          <TextInput
+          <TextArea
             label="Description"
-            type="text"
             {...register("description")}
             placeholder="Enter your description"
             error={errors.description?.message}
+            rows={3}
+            required={false}
           />          
           <TextInput
             label="Amount"
@@ -63,54 +96,97 @@ const AddTransactionModal = (
             {...register("amount", { valueAsNumber: true })}
             placeholder="Enter your amount"
             error={errors.amount?.message}
+            withPrefix
+            prefix="₦"
           />
-          <SelectInput
-            label="Type"
-            options={["DEBIT", "CREDIT"]}
-            {...register("type")}
-            error={errors.type?.message}
-            placeholder="Select transaction type"
+          <Controller
+            name="type"
+            control={control}
+            render={({ field }) => (
+              <SelectInput
+                label="Type"
+                options={["DEBIT", "CREDIT"]}
+                value={field.value}
+                onChange={field.onChange}
+                onBlur={field.onBlur}
+                error={errors.type?.message}
+                placeholder="Select transaction type"
+              />
+            )}
           />
-          <TextInput
-            label="Sender"
-            {...register("sender")}
-            placeholder="Enter your sender"
-            error={errors.sender?.message}
-          />
-          <TextInput
-            label="Recipient"
-            {...register("recipient")}
-            placeholder="Enter your recipient"
-            error={errors.recipient?.message}
-          />
+          {transactionType === "CREDIT" && (
+            <TextInput
+              label="Sender"
+              {...register("sender")}
+              placeholder="Enter your sender"
+              error={errors.sender?.message}
+              required={false}
+            />
+          )}
+          {transactionType === "DEBIT" && (
+            <TextInput
+              label="Recipient"
+              {...register("recipient")}
+              placeholder="Enter your recipient"
+              error={errors.recipient?.message}
+              required={false}
+            />
+          )}
           <TextInput
             label="Transaction Date"
             type="date"
-            {...register("transaction_date")}
+            {...register("transaction_date", { valueAsDate: true })}
             error={errors.transaction_date?.message}
           />
-          <SelectInput
-            label="Category"
-            options={["DEBIT", "CREDIT"]}
-            {...register("category_id")}
-            error={errors.category_id?.message}
-            placeholder="Select category"
+          <Controller
+            name="budget_id"
+            control={control}
+            render={({ field }) => (
+              <SelectInput
+                label="Budget"
+                options={budgets.map((budget) => ({
+                  label: budget.name,
+                  value: budget.id.toString(),
+                }))}
+                value={field.value ? field.value.toString() : ""}
+                onChange={(e) => {
+                  const value = e.target.value;
+                  field.onChange(value === "" ? undefined : Number(value));
+                }}
+                onBlur={field.onBlur}
+                error={errors.budget_id?.message}
+                placeholder="Select budget"
+                required={false}
+              />
+            )}
           />
-          <SelectInput
-            label="Budget"
-            options={["DEBIT", "CREDIT"]}
-            {...register("budget_id")}
-            error={errors.budget_id?.message}
-            placeholder="Select budget"
+          <Controller
+            name="pot_id"
+            control={control}
+            render={({ field }) => (
+              <SelectInput
+                label="Pot"
+                options={pots.map((pot) => ({
+                  label: pot.name,
+                  value: pot.id.toString(),
+                }))}
+                value={field.value ? field.value.toString() : ""}
+                onChange={(e) => {
+                  const value = e.target.value;
+                  field.onChange(value === "" ? undefined : Number(value));
+                }}
+                onBlur={field.onBlur}
+                error={errors.pot_id?.message}
+                placeholder="Select pot"
+                required={false}
+              />
+            )}
           />
-          <SelectInput
-            label="Pot"
-            options={["DEBIT", "CREDIT"]}
-            {...register("pot_id")}
-            error={errors.pot_id?.message}
-            placeholder="Select pot"
+          <PrimaryButton 
+            type="submit" 
+            disabled={!isValid || isPending} 
+            label={isPending ? "Adding Transaction..." : "Add Transaction"} 
           />
-          <PrimaryButton type="submit" disabled={!isValid} label="Add Transaction" />
         </form>
       </div>
     </Modal>
