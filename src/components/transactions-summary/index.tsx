@@ -1,30 +1,21 @@
 "use client"
 
-import { useQuery } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
 import { TertiaryButton, PrimaryButton } from "../button";
 import TransactionItem from "./transaction-item";
-import { transactionsService } from "@/lib/api/services/transactions";
 import { AlertCircle } from "lucide-react";
 import { Transaction } from "@/lib/api/services/transactions/types";
 import Image from "next/image";
+import { APIResponse } from "@/types/auth";
 
-export default function TransactionsSummary() {
+interface TransactionsSummaryProps {
+  data?: APIResponse<Transaction[]>
+  isLoading: boolean
+  error: Error | null
+}
+
+export default function TransactionsSummary({ data, isLoading, error }: TransactionsSummaryProps) {
   const router = useRouter();
-  
-  const { data, isLoading, error } = useQuery({
-    queryKey: ['transactions', { skip: 0, limit: 5 }],
-    queryFn: async () => {
-      const response = await transactionsService.getTransactions({
-        skip: 0,
-        limit: 5,
-        sort_by: 'transaction_date',
-        sort_order: 'desc'
-      });
-      console.log("response =>", response)
-      return response.data;
-    }
-  });
 
   if (isLoading) {
     return (
@@ -64,7 +55,9 @@ export default function TransactionsSummary() {
     );
   }
 
-  if (!data?.length) {
+  const transactions = data?.data
+
+  if (!transactions?.length) {
     return (
       <div className="bg-white rounded-xl p-8 relative">
         <div className="flex items-center justify-between mb-8">
@@ -100,14 +93,14 @@ export default function TransactionsSummary() {
         />
       </div>
       <div className="flex flex-col gap-5">
-        {data.map((transaction: Transaction, index: number) => (
+        {transactions.map((transaction: Transaction, index: number) => (
           <TransactionItem
             key={transaction.id}
             name={transaction.sender || transaction.recipient}
             description={transaction.description}
             transactionAmount={transaction.amount}
             transactionDate={transaction.transaction_date.toString()}
-            showDivider={index === data.length - 1 ? false : true}
+            showDivider={index === transactions.length - 1 ? false : true}
           />
         ))}
       </div>
