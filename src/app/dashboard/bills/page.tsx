@@ -91,6 +91,7 @@ export default function BillsPage() {
                 <SearchBar
                   type="bill"
                   onSearch={handleSearch}
+                  value={search}
                 />
               </div>
               <div className="flex items-center justify-end gap-6 flex-[10%] md:flex-[30%] lg:flex-1">
