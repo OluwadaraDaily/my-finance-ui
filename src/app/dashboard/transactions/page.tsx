@@ -1,9 +1,7 @@
 "use client";
 import SearchBar from "@/components/transactions/search-bar";
 import Sort from "@/components/transactions/sort";
-// import Filter from "@/components/transactions/filter";
 import React, { useState, useMemo } from "react";
-// import { transactions } from "@/components/transactions-summary/data";
 import TransactionListMobile from "@/components/transactions/transaction-list-mobile";
 import TransactionsTable from "@/components/transactions/transactions-table";
 import Pagination from "@/components/pagination";
@@ -83,7 +81,6 @@ export default function TransactionsPage() {
   });
 
   const transactions: Transaction[] = useMemo(() => transactionsResponse?.data || [], [transactionsResponse]);
-  console.log("transactions =>", transactions);
   
   // Derived state: Apply sorting only
   const processedData = useMemo(() => {
