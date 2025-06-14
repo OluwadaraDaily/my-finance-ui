@@ -12,7 +12,6 @@ import { potsService } from "@/lib/api/services/pots";
 import { Pot } from "@/lib/api/services/pots/types";
 import { AlertCircle, CookingPot } from "lucide-react";
 
-// Loading state component
 function LoadingSkeleton() {
   return (
     <div className="w-[95%] md:w-[90%] mx-auto">
@@ -48,7 +47,6 @@ function LoadingSkeleton() {
   );
 }
 
-// Error state component
 function ErrorState({ error }: { error: unknown }) {
   return (
     <div className="w-[95%] md:w-[90%] mx-auto">
@@ -63,7 +61,6 @@ function ErrorState({ error }: { error: unknown }) {
   );
 }
 
-// Empty state component
 function EmptyState({ onAddPot }: { onAddPot: () => void }) {
   return (
     <div className="w-[95%] md:w-[90%] mx-auto">

@@ -1,8 +1,22 @@
 import { COLOR_TAG_OPTIONS } from "@/data/budget";
-import { SelectInput, TextInput } from "../input";
+import { SelectInput, TextInput, TextArea } from "../input";
 import Modal from "../modal";
-import { useState } from "react";
 import { PrimaryButton } from "../button";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { potsService } from "@/lib/api/services/pots";
+import { useForm, Controller } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { z } from "zod";
+import { toast } from "sonner";
+
+const addPotSchema = z.object({
+  name: z.string().min(1, "Name is required"),
+  description: z.string().optional(),
+  target_amount: z.number().min(1, "Target amount must be greater than 0"),
+  color: z.string().min(1, "Color is required"),
+});
+
+type AddPotFormData = z.infer<typeof addPotSchema>;
 
 export default function AddPotModal({
   isOpen,
@@ -10,21 +24,43 @@ export default function AddPotModal({
 }: {
   isOpen: boolean;
   setIsOpen: (isOpen: boolean) => void;
-  }) {
-  const [formData, setFormData] = useState({
-    potName: "",
-    target: "",
-    colorTag: COLOR_TAG_OPTIONS[0].value,
+}) {
+  const queryClient = useQueryClient();
+  const {
+    register,
+    handleSubmit,
+    control,
+    reset,
+    formState: { errors, isValid },
+  } = useForm<AddPotFormData>({
+    resolver: zodResolver(addPotSchema),
+    mode: "onChange",
+    defaultValues: {
+      name: "",
+      description: "",
+      target_amount: 0,
+      color: COLOR_TAG_OPTIONS[0].value,
+    },
   });
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    console.log(formData);
-    // Bubble up an event to inform parent component to refetch pots
-    const event = new CustomEvent("fetchPots");
-    document.dispatchEvent(event);
-    setIsOpen(false);
-  }
+  const { mutate: createPot, isPending } = useMutation({
+    mutationFn: potsService.createPot,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["pots"] });
+      setIsOpen(false);
+      toast.success("Pot created successfully");
+      reset();
+    },
+    onError: (error) => {
+      toast.error("Failed to create pot", {
+        description: error.message || "An error occurred while creating the pot",
+      });
+    },
+  });
+
+  const onSubmit = (data: AddPotFormData) => {
+    createPot(data);
+  };
 
   return (
     <Modal
@@ -39,40 +75,53 @@ export default function AddPotModal({
           Set a limit for each pot and we&apos;ll help you
           stay on track with your financial goals.
         </p>
-        <form className="flex flex-col gap-4" onSubmit={handleSubmit}>
+        <form className="flex flex-col gap-4" onSubmit={handleSubmit(onSubmit)}>
           <TextInput
             label="Pot Name"
-            name="pot-name"
+            {...register("name")}
             placeholder="Enter pot name"
-            value={formData.potName}
-            onChange={(e) => setFormData({ ...formData, potName: e.target.value })}
+            error={errors.name?.message}
+          />
+          <TextArea
+            label="Description"
+            {...register("description")}
+            placeholder="Enter pot description (optional)"
+            error={errors.description?.message}
+            required={false}
           />
           <TextInput
-            label="Target"
-            name="target"
-            placeholder="e.g. 2000"
-            value={formData.target}
-            onChange={(e) => setFormData({ ...formData, target: e.target.value })}
+            label="Target Amount"
             type="number"
+            {...register("target_amount", { valueAsNumber: true })}
+            placeholder="e.g. 2000"
+            error={errors.target_amount?.message}
             withPrefix
             prefix="₦"
           />
-          <SelectInput
-            label="Color Tag"
-            name="color-tag"
-            options={COLOR_TAG_OPTIONS}
-            value={formData.colorTag}
-            onChange={(e) => setFormData({ ...formData, colorTag: e.target.value })}
-            withColorTag
+          <Controller
+            name="color"
+            control={control}
+            render={({ field }) => (
+              <SelectInput
+                label="Color Tag"
+                options={COLOR_TAG_OPTIONS}
+                value={field.value}
+                onChange={field.onChange}
+                onBlur={field.onBlur}
+                error={errors.color?.message}
+                withColorTag
+              />
+            )}
           />
           <div className="w-full">
             <PrimaryButton
-              label="Add Pot"
+              label={isPending ? "Creating Pot..." : "Add Pot"}
               type="submit"
+              disabled={!isValid || isPending}
             />
           </div>
         </form>
       </div>
     </Modal>
-  )
+  );
 }
