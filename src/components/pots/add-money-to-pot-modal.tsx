@@ -2,7 +2,7 @@ import { formatCurrency } from "@/utils/format";
 import Modal from "../modal";
 import { Pot } from "@/lib/api/services/pots/types";
 import { useEffect } from "react";
-import { TextInput } from "../input";
+import { TextInput, TextArea } from "../input";
 import { PrimaryButton } from "../button";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -13,7 +13,10 @@ import { toast } from "sonner";
 
 const addMoneySchema = z.object({
   amount: z.number()
-    .min(1, "Amount must be greater than 0")
+    .min(1, "Amount must be greater than 0"),
+  reason: z.string()
+    .min(1, "Reason is required")
+    .max(200, "Reason must be less than 200 characters")
 });
 
 type AddMoneyFormData = z.infer<typeof addMoneySchema>;
@@ -42,6 +45,7 @@ export default function AddMoneyToPotModal({
     mode: "onChange",
     defaultValues: {
       amount: 0,
+      reason: "",
     },
   });
 
@@ -56,7 +60,10 @@ export default function AddMoneyToPotModal({
 
   const { mutate: addMoney, isPending } = useMutation({
     mutationFn: async (data: AddMoneyFormData) => {
-      const response = await potsService.updateSavedAmount(pot.id, data.amount);
+      const response = await potsService.updateSavedAmount(pot.id, {
+        amount: data.amount,
+        reason: data.reason
+      });
       return response;
     },
     onSuccess: () => {
@@ -131,6 +138,13 @@ export default function AddMoneyToPotModal({
             onChange: handleAmountChange 
           })}
           error={errors.amount?.message}
+        />
+        <TextArea
+          label="Reason"
+          placeholder="Enter the reason for adding money"
+          {...register("reason")}
+          error={errors.reason?.message}
+          required={true}
         />
         <div className="w-full">
           <PrimaryButton
