@@ -1,6 +1,6 @@
 import { APIResponse } from "@/types/auth";
 import api from "../../axios";
-import { CreatePot, Pot, PotSummary, UpdatePot } from "./types";
+import { CreatePot, IUpdateSavedAmount, Pot, PotSummary, UpdatePot } from "./types";
 
 const getPots = async (): Promise<APIResponse<Pot[]>> => {
   const response = await api.get('/pots');
@@ -27,8 +27,8 @@ const updatePot = async (id: number, pot: UpdatePot): Promise<APIResponse<Pot>> 
   return response.data;
 }
 
-const updateSavedAmount = async (id: number, amount: number): Promise<APIResponse<Pot>> => {
-  const response = await api.patch(`/pots/${id}/update-saved-amount`, { amount });
+const updateSavedAmount = async (id: number, data: IUpdateSavedAmount): Promise<APIResponse<Pot>> => {
+  const response = await api.patch(`/pots/${id}/update-saved-amount`, data);
   return response.data;
 }
 

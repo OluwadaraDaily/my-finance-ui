@@ -23,6 +23,11 @@ export interface UpdatePot {
   saved_amount?: number;
 }
 
+export interface IUpdateSavedAmount {
+  amount: number;
+  reason: string;
+}
+
 export interface PotSummary {
   total_saved_amount: number;
   total_target_amount: number;
