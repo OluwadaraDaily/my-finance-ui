@@ -78,9 +78,13 @@ export default function TransactionsPage() {
   const { data: transactionsResponse, isLoading } = useQuery({
     queryKey: ["transactions"],
     queryFn: () => transactionsService.getTransactions(),
+    refetchOnWindowFocus: true,
+    staleTime: 0,
   });
 
   const transactions: Transaction[] = useMemo(() => transactionsResponse?.data || [], [transactionsResponse]);
+
+  console.log("Refetched transactions =>", transactions);
   
   // Derived state: Apply sorting only
   const processedData = useMemo(() => {
