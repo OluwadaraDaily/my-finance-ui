@@ -15,7 +15,7 @@ export default function PotItem({
     return (
       <div className="flex items-center gap-4 w-full animate-pulse">
         <div 
-          className="min-w-1 h-12 rounded-lg bg-gray-300"
+          className="min-w-1 min-h-12 rounded-lg bg-gray-300"
         />
         <div>
           <div className="h-3 w-16 bg-gray-300 rounded mb-2"/>
@@ -28,7 +28,7 @@ export default function PotItem({
   return (
     <div className="flex items-center gap-4 w-full">
       <div 
-        className="min-w-1 h-full rounded-lg" 
+        className="min-w-1 min-h-12 rounded-lg" 
         style={{ backgroundColor: color }}
       />
       <div>

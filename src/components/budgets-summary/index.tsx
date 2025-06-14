@@ -113,7 +113,7 @@ export default function BudgetsSummary({ data, isLoading, error }: BudgetsSummar
           onClick={() => router.push("/dashboard/budgets")}
         />
       </div>
-      <div className="flex flex-col md:flex-row gap-4">
+      <div className="flex flex-col md:flex-row gap-4 lg:flex-col lg:items-center">
         <div className="relative w-[300px] h-[300px] md:flex-[80%]">
           <BudgetsChart
             data={chartData}
@@ -121,8 +121,8 @@ export default function BudgetsSummary({ data, isLoading, error }: BudgetsSummar
             error={error}
           />
         </div>
-        <div className="grid grid-cols-2 grid-rows-2 gap-4 md:flex-[20%] md:grid-cols-1 md:grid-rows-4">
-          {budgets.map((budget: ChartBudget) => (
+        <div className="grid grid-cols-2 auto-rows-fr gap-4 md:flex-[20%] md:grid-cols-1 lg:grid-cols-2 lg:gap-12">
+          {budgets.slice(0, 4).map((budget: ChartBudget) => (
             <PotItem
               key={budget.label}
               label={budget.label}
