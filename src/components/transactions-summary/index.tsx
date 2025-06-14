@@ -93,13 +93,10 @@ export default function TransactionsSummary({ data, isLoading, error }: Transact
         />
       </div>
       <div className="flex flex-col gap-5">
-        {transactions.map((transaction: Transaction, index: number) => (
+        {transactions.slice(0, 5).map((transaction: Transaction, index: number) => (
           <TransactionItem
             key={transaction.id}
-            name={transaction.sender || transaction.recipient}
-            description={transaction.description}
-            transactionAmount={transaction.amount}
-            transactionDate={transaction.transaction_date.toString()}
+            transaction={transaction}
             showDivider={index === transactions.length - 1 ? false : true}
           />
         ))}

@@ -1,22 +1,17 @@
 "use client"
 import Image from "next/image"
 import { formatCurrency } from "@/utils/format"
+import { Transaction } from "@/lib/api/services/transactions/types";
 
 interface TransactionItemProps {
   imageUrl?: string;
-  name?: string;
-  description: string;
-  transactionAmount: number;
-  transactionDate: string;
+  transaction: Transaction;
   showDivider?: boolean;
 }
 
 export default function TransactionItem({
-  imageUrl = '/icons/default-transaction.svg',
-  name,
-  description,
-  transactionAmount,
-  transactionDate,
+  imageUrl = '/icons/transactions.svg',
+  transaction,
   showDivider = true
 }: TransactionItemProps) {
   return (
@@ -31,13 +26,15 @@ export default function TransactionItem({
             className="w-12 h-12 rounded-full object-cover"
           />
           <div>
-            <p className="font-medium mb-1">{name || description}</p>
-            <p className="text-sm text-grey-500">{new Date(transactionDate).toLocaleDateString()}</p>
+            <p className="font-medium mb-1">{transaction.type === "CREDIT" ? transaction.sender : transaction.recipient}</p>
+            <p className="text-sm text-grey-500">
+              {new Date(transaction.transaction_date).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
+            </p>
           </div>
         </div>
-        <p className={`font-medium ${transactionAmount < 0 ? 'text-app-red' : 'text-green-600'}`}>
-          {transactionAmount < 0 ? '-' : '+'}
-          {formatCurrency(Math.abs(transactionAmount))}
+        <p className={`font-bold ${transaction.type === "DEBIT" ? 'text-app-red' : 'text-app-green'}`}>
+          {transaction.type === "DEBIT" ? '-' : '+'}
+          {formatCurrency(Math.abs(transaction.amount))}
         </p>
       </div>
       {showDivider && (
