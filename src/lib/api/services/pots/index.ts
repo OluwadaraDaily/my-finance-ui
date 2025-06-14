@@ -1,14 +1,13 @@
 import { APIResponse } from "@/types/auth";
-import { IPot } from "@/types/pots";
 import api from "../../axios";
 import { CreatePot, Pot, PotSummary, UpdatePot } from "./types";
 
-const getPots = async (): Promise<APIResponse<IPot[]>> => {
+const getPots = async (): Promise<APIResponse<Pot[]>> => {
   const response = await api.get('/pots');
   return response.data;
 }
 
-const getPotById = async (id: number): Promise<APIResponse<IPot>> => {
+const getPotById = async (id: number): Promise<APIResponse<Pot>> => {
   const response = await api.get(`/pots/${id}`);
   return response.data;
 }
