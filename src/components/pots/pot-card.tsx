@@ -1,11 +1,19 @@
 "use client";
-import { IPot } from "@/types/pots";
+import { Pot } from "@/lib/api/services/pots/types";
 import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
 import { SecondaryButton } from "../button";
 import { formatCurrency } from "@/utils/format";
 
-export default function PotCard({ pot, onEdit, onDelete, onAddMoney, onWithdraw }: { pot: IPot, onEdit: () => void, onDelete: () => void, onAddMoney: () => void, onWithdraw: () => void }) {
+interface PotCardProps {
+  pot: Pot;
+  onEdit: () => void;
+  onDelete: () => void;
+  onAddMoney: () => void;
+  onWithdraw: () => void;
+}
+
+export default function PotCard({ pot, onEdit, onDelete, onAddMoney, onWithdraw }: PotCardProps) {
   const [showMenu, setShowMenu] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
 
@@ -67,23 +75,23 @@ export default function PotCard({ pot, onEdit, onDelete, onAddMoney, onWithdraw 
         </div>
         <div className="flex items-center justify-between mb-4">
           <p className="text-grey-500 text-sm">Total Saved</p>
-          <p className="text-grey-900 text-xl font-bold">{formatCurrency(pot.savedAmount)}</p>
+          <p className="text-grey-900 text-xl font-bold">{formatCurrency(pot.saved_amount)}</p>
         </div>
         <div className="mb-8">
           <div className="w-full h-2 bg-beige-100 rounded-sm mb-3">
             <div className="h-2  rounded-sm"
               style={{
                 width:
-                  `${(pot.savedAmount / pot.targetAmount) * 100}%`,
+                  `${(pot.saved_amount / pot.target_amount) * 100}%`,
                 background: pot.color
               }} />
           </div>
           <div className="flex items-center justify-between">
             <p className="text-xs font-bold text-grey-500">
-              {((pot.savedAmount / pot.targetAmount) * 100).toFixed(2)}%
+              {((pot.saved_amount / pot.target_amount) * 100).toFixed(2)}%
             </p>
             <p className="text-xs text-grey-500">
-              Target of {formatCurrency(pot.targetAmount)}
+              Target of {formatCurrency(pot.target_amount)}
             </p>
           </div>
         </div>
