@@ -1,9 +1,22 @@
 import { formatCurrency } from "@/utils/format";
 import Modal from "../modal";
-import { IPot } from "@/types/pots";
-import { useState, useEffect } from "react";
+import { Pot } from "@/lib/api/services/pots/types";
+import { useEffect } from "react";
 import { TextInput } from "../input";
 import { PrimaryButton } from "../button";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { z } from "zod";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { potsService } from "@/lib/api/services/pots";
+import { toast } from "sonner";
+
+const addMoneySchema = z.object({
+  amount: z.number()
+    .min(1, "Amount must be greater than 0")
+});
+
+type AddMoneyFormData = z.infer<typeof addMoneySchema>;
 
 export default function AddMoneyToPotModal({
   isOpen,
@@ -12,39 +25,66 @@ export default function AddMoneyToPotModal({
 }: {
   isOpen: boolean;
   setIsOpen: (isOpen: boolean) => void;
-  pot: IPot;
+  pot: Pot;
 }) {
-  const [amountToAdd, setAmountToAdd] = useState(0);
-  const remainingAmount = pot.targetAmount - pot.savedAmount;
+  const queryClient = useQueryClient();
+  const remainingAmount = pot.target_amount - pot.saved_amount;
 
+  const {
+    register,
+    handleSubmit,
+    watch,
+    reset,
+    setValue,
+    formState: { errors, isValid },
+  } = useForm<AddMoneyFormData>({
+    resolver: zodResolver(addMoneySchema),
+    mode: "onChange",
+    defaultValues: {
+      amount: 0,
+    },
+  });
+
+  const amount = watch("amount") || 0;
+
+  // Reset form when modal opens
   useEffect(() => {
     if (isOpen) {
-      setAmountToAdd(0);
+      reset();
     }
-  }, [isOpen]);
+  }, [isOpen, reset]);
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    // Handle form submission logic here
-    console.log("AMOUNT TO ADD =>", amountToAdd);
-    setIsOpen(false);
-    setAmountToAdd(0);
-    // TODO: Add money to pot
-    // Bubble up an event to inform parent component to refetch pots
-    const event = new CustomEvent("fetchPots");
-    document.dispatchEvent(event);
-    setIsOpen(false);
-  };
+  const { mutate: addMoney, isPending } = useMutation({
+    mutationFn: async (data: AddMoneyFormData) => {
+      const response = await potsService.updateSavedAmount(pot.id, data.amount);
+      return response;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["pots"] });
+      setIsOpen(false);
+      toast.success("Money added to pot successfully");
+      reset();
+    },
+    onError: (error) => {
+      toast.error("Failed to add money to pot", {
+        description: error.message || "An error occurred while adding money to the pot",
+      });
+    },
+  });
 
   const handleAmountChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = Number(e.target.value);
     
-    if (amountToAdd === remainingAmount && value >= remainingAmount) {
+    if (value >= remainingAmount) {
+      setValue("amount", remainingAmount);
       return;
     }
     
-    const maxAmount = Math.min(value, remainingAmount);
-    setAmountToAdd(maxAmount);
+    setValue("amount", value);
+  };
+
+  const onSubmit = (data: AddMoneyFormData) => {
+    addMoney(data);
   };
 
   return (
@@ -61,39 +101,42 @@ export default function AddMoneyToPotModal({
       <div className="mb-5">
         <div className="flex items-center justify-between mb-4">
           <p className="text-sm text-grey-500">New Amount</p>
-          <p className="text-xl text-grey-900 font-semibold">{formatCurrency(pot.targetAmount)}</p>
+          <p className="text-xl text-grey-900 font-semibold">{formatCurrency(pot.target_amount)}</p>
         </div>
         <div className="w-full flex items-center gap-1 mb-3">
-          <div className="h-2 bg-grey-900 rounded-tl-sm rounded-bl-sm" style={{ width: `${pot.savedAmount / pot.targetAmount * 100}%` }} />
-          <div className="h-2 bg-beige-100 rounded-tr-sm rounded-br-sm" style={{ width: `${(pot.targetAmount - pot.savedAmount) / pot.targetAmount * 100}%` }}>
-              <div className="h-2 bg-app-green rounded-tr-sm rounded-br-sm" style={{ width: `${amountToAdd / (pot.targetAmount - pot.savedAmount) * 100}%` }} />
+          <div className="h-2 bg-grey-900 rounded-tl-sm rounded-bl-sm" style={{ width: `${pot.saved_amount / pot.target_amount * 100}%` }} />
+          <div className="h-2 bg-beige-100 rounded-tr-sm rounded-br-sm" style={{ width: `${(pot.target_amount - pot.saved_amount) / pot.target_amount * 100}%` }}>
+              <div className="h-2 bg-app-green rounded-tr-sm rounded-br-sm" style={{ width: `${amount / (pot.target_amount - pot.saved_amount) * 100}%` }} />
           </div>
         </div>
         <div className="flex items-center justify-between">
           <p className="text-app-green text-xs font-bold">
-            {((amountToAdd / pot.targetAmount) * 100).toFixed(2)}%
+            {((amount / pot.target_amount) * 100).toFixed(2)}%
           </p>
           <p className="text-xs text-grey-500">
-            Target of {formatCurrency(pot.targetAmount)}
+            Target of {formatCurrency(pot.target_amount)}
           </p>
         </div>
       </div>
       {/* Add money form */}
-      <form onSubmit={handleSubmit} className="flex flex-col gap-4">
+      <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-4">
         <TextInput
           label="Amount to Add"
-          name="amountToAdd"
-          value={amountToAdd.toString()}
-          onChange={handleAmountChange}
-          withPrefix
-          prefix="$"
+          placeholder="Enter amount to add"
           type="number"
+          withPrefix
+          prefix="₦"
+          {...register("amount", { 
+            valueAsNumber: true,
+            onChange: handleAmountChange 
+          })}
+          error={errors.amount?.message}
         />
         <div className="w-full">
           <PrimaryButton
-            label="Confirm Addition"
+            label={isPending ? "Adding Money..." : "Confirm Addition"}
             type="submit"
-            disabled={amountToAdd <= 0}
+            disabled={!isValid || isPending || amount <= 0}
           />
         </div>
       </form>
