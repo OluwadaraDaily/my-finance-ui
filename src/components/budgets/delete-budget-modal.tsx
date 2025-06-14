@@ -1,6 +1,7 @@
-import { IBudget } from "@/types/budgets";
+import { Budget } from "@/lib/api/services/budgets/types";
 import Modal from "../modal";
 import DestroyButton from "../button/destroy-btn";
+import { budgetService } from "@/lib/api/services/budgets";
 
 export default function DeleteBudgetModal({
   isOpen,
@@ -9,11 +10,11 @@ export default function DeleteBudgetModal({
 }: {
   isOpen: boolean;
   setIsOpen: (isOpen: boolean) => void;
-  budget: IBudget;
+  budget: Budget;
 }) {
-  const handleDelete = () => {
+  const handleDelete = async () => {
     console.log("Deleting budget...", budget);
-    // TODO: Delete the budget
+    await budgetService.deleteBudget(budget.id);
     setIsOpen(false);
     // Bubble up an event to inform parent component to refetch budgets
     const event = new CustomEvent("fetchBudgets");
