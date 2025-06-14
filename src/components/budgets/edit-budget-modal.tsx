@@ -4,7 +4,7 @@ import { SelectInput, TextInput } from "../input";
 import { useEffect, useState } from "react";
 import { COLOR_TAG_OPTIONS, BUDGET_CATEGORY_OPTIONS } from "@/data/budget";
 import PrimaryButton from "../button/primary-btn";
-import { IBudget } from "@/types/budgets";
+import { Budget } from "@/lib/api/services/budgets/types";
 
 export default function EditBudgetModal({
   isOpen,
@@ -13,25 +13,25 @@ export default function EditBudgetModal({
 }: {
   isOpen: boolean;
   setIsOpen: (isOpen: boolean) => void;
-  budget: IBudget;
+  budget: Budget;
   }) {
   const [formData, setFormData] = useState({
     budgetCategory: budget.name,
-    maximumSpending: budget.amount,
+    maximumSpending: budget.total_amount,
     colorTag: budget.color,
   });
 
   useEffect(() => {
     setFormData({
       budgetCategory: budget.name,
-      maximumSpending: budget.amount,
+      maximumSpending: budget.total_amount,
       colorTag: budget.color,
     });
   }, [budget]);
   
   const hasChanges = () => {
     return formData.budgetCategory !== budget.name ||
-           formData.maximumSpending !== budget.amount ||
+           formData.maximumSpending !== budget.total_amount ||
            formData.colorTag !== budget.color;
   }
 

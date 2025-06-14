@@ -1,63 +1,66 @@
 "use client";
 
-import { IBudget } from "@/types/budgets";
-import { Transaction, TransactionType } from "@/lib/api/services/transactions/types";
+import { Budget } from "@/lib/api/services/budgets/types";
+import { Transaction } from "@/lib/api/services/transactions/types";
 import { formatCurrency } from "@/utils/format";
 import Image from "next/image";
 import { useState, useEffect, useRef } from "react";
 import { TertiaryButton } from "../button";
 
-const LATEST_SPENDING_DATA: Transaction[] = [
-  {
-    id: 1,
-    recipient: 'Papa Software',
-    amount: -10,
-    type: TransactionType.DEBIT,
-    transaction_date: new Date('16 Aug 2024'),
-    description: 'Software subscription',
-    meta_data: {},
-    account_id: 1,
-    created_at: new Date('16 Aug 2024'),
-    updated_at: new Date('16 Aug 2024')
-  },
-  {
-    id: 2, 
-    recipient: 'Quebec Services',
-    amount: -5,
-    type: TransactionType.DEBIT,
-    transaction_date: new Date('12 Aug 2024'),
-    description: 'Service fee',
-    meta_data: {},
-    account_id: 1,
-    created_at: new Date('12 Aug 2024'),
-    updated_at: new Date('12 Aug 2024')
-  },
-  {
-    id: 3,
-    recipient: 'Romeo Cloud Service', 
-    amount: -10,
-    type: TransactionType.DEBIT,
-    transaction_date: new Date('5 Aug 2024'),
-    description: 'Cloud storage',
-    meta_data: {},
-    account_id: 1,
-    created_at: new Date('5 Aug 2024'),
-    updated_at: new Date('5 Aug 2024')
+interface LatestSpendingProps {
+  transactions: Transaction[];
+}
+
+function LatestSpending({ transactions }: LatestSpendingProps) {
+  if (!transactions?.length) {
+    return null;
   }
-];
+
+  return (
+    <div className="bg-beige-100 p-4 rounded-xl mt-5">
+      <div className="flex items-center justify-between mb-4">
+        <h3 className="text-base font-semibold">Latest Spending</h3>
+        <TertiaryButton
+          label="See All"
+          onClick={() => {}}
+        />
+      </div>
+      <div>
+        {transactions.map((transaction: Transaction, index: number, arr: Transaction[]) => (
+          <div key={transaction.recipient}>
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="font-bold text-xs mb-1">{transaction.recipient}</p>
+              </div>
+              <div>
+                <p className="font-bold text-xs text-grey-900 text-right mb-1">
+                  {transaction.amount < 0 ? `-${formatCurrency(Math.abs(transaction.amount))}` : formatCurrency(transaction.amount)}
+                </p>
+                <p className="text-grey-500 text-xs">{transaction.transaction_date.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}</p>
+              </div>
+            </div>
+            {index !== arr.length - 1 && (
+              <div className="w-full h-[1px] bg-grey-500 opacity-[15%] my-4" />
+            )}
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
 
 export default function BudgetCard({
   budget,
   onEdit,
   onDelete,
 }: {
-  budget: IBudget;
+  budget: Budget;
   onEdit: () => void;
   onDelete: () => void;
 }) {
   const [showMenu, setShowMenu] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
-  const spentPercentage = (budget.spent / budget.amount) * 100;
+  const spentPercentage = (budget.spent_amount / budget.total_amount) * 100;
 
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
@@ -114,9 +117,9 @@ export default function BudgetCard({
             )}
           </div>
         </div>
-        <div className="my-5">
+        <div className="mt-5">
           <p className="text-sm text-gray-500">
-            Maximum of {formatCurrency(budget.amount)}
+            Maximum of {formatCurrency(budget.total_amount)}
           </p>
           <div className="my-4 p-1 h-8 bg-beige-100 rounded-sm">
             <div
@@ -129,48 +132,20 @@ export default function BudgetCard({
               <div className="w-1 h-[43px] rounded-lg" style={{ backgroundColor: budget.color }} />
               <div>
                 <p className="text-xs text-gray-500 mb-1">Spent</p>
-                <p className="text-sm font-bold">{formatCurrency(budget.spent)}</p>
+                <p className="text-sm font-bold">{formatCurrency(budget.spent_amount)}</p>
               </div>
             </div>
             <div className="flex items-center gap-4 flex-1/2">
               <div className="w-1 h-[43px] rounded-lg bg-beige-100" />
               <div>
                 <p className="text-xs text-gray-500 mb-1">Free</p>
-                <p className="text-sm font-bold">{formatCurrency(budget.amount - budget.spent)}</p>
+                <p className="text-sm font-bold">{formatCurrency(budget.total_amount - budget.spent_amount)}</p>
               </div>
             </div>
           </div>
         </div>
-        <div className="bg-beige-100 p-4 rounded-xl">
-          {/* Latest Spending Section */}
-          <div className="flex items-center justify-between mb-4">
-            <h3 className="text-base font-semibold">Latest Spending</h3>
-            <TertiaryButton
-              label="See All"
-              onClick={() => {}}
-            />
-          </div>
-          <div>
-            {LATEST_SPENDING_DATA.map((transaction: Transaction, index: number, arr: Transaction[]) => (
-              <div key={transaction.recipient}>
-                <div className="flex items-center justify-between">
-                  <div>
-                    <p className="font-bold text-xs mb-1">{transaction.recipient}</p>
-                  </div>
-                  <div>
-                    <p className="font-bold text-xs text-grey-900 text-right mb-1">
-                      {transaction.amount < 0 ? `-${formatCurrency(Math.abs(transaction.amount))}` : formatCurrency(transaction.amount)}
-                    </p>
-                    <p className="text-grey-500 text-xs">{transaction.transaction_date.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}</p>
-                  </div>
-                </div>
-                {index !== arr.length - 1 && (
-                  <div className="w-full h-[1px] bg-grey-500 opacity-[15%] my-4" />
-                )}
-              </div>
-            ))}
-          </div>
-        </div>
+        {/* Latest Spending */}
+        <LatestSpending transactions={budget.transactions || []} />
       </div>
     </div>
   )
