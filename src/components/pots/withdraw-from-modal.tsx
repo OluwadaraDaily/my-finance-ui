@@ -146,6 +146,7 @@ export default function WithdrawFromPotModal({
           placeholder="Enter the reason for withdrawing money"
           {...register("reason")}
           error={errors.reason?.message}
+          required={true}
         />
         <div className="w-full">
           <PrimaryButton

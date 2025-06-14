@@ -144,6 +144,7 @@ export default function AddMoneyToPotModal({
           placeholder="Enter the reason for adding money"
           {...register("reason")}
           error={errors.reason?.message}
+          required={true}
         />
         <div className="w-full">
           <PrimaryButton
