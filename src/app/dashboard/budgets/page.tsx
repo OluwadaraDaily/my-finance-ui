@@ -176,14 +176,14 @@ function BudgetSummarySection({
           {/* Spending Summary */}
           <div className="md:flex-1 lg:w-full">
             <h3 className="text-lg font-semibold mb-6">Spending Summary</h3>
-            {budgets.slice(0, 5).map((budget: Budget, index: number) => (
+            {budgets.slice(0, 5).map((budget: Budget, index: number, slicedArray: Budget[]) => (
               <SpendingSummaryItem
                 key={budget.id}
                 label={budget.name}
                 spentAmount={budget.spent_amount}
                 totalAmount={budget.total_amount}
                 color={budget.color}
-                showDivider={index !== budgets.length - 1}
+                showDivider={index !== slicedArray.length - 1}
               />
             ))}
           </div>

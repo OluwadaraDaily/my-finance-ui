@@ -106,8 +106,8 @@ export default function PotsSummary({ data, isLoading, error }: PotsSummaryProps
           />
         </div>
       </div>
-      <div className="flex flex-col md:flex-row md:gap-5">
-        <div className="p-4 flex items-center gap-4 bg-beige-100 rounded-xl mb-5 md:mb-0 md:flex-[45%]">
+      <div className="flex flex-col md:flex-row lg:flex-col md:gap-5">
+        <div className="py-4 px-6 flex items-center gap-4 bg-beige-100 rounded-xl mb-5 md:mb-0 md:flex-[45%] lg:w-max-content">
           <Image
             src="/icons/pots-jar.svg"
             alt=""
@@ -116,10 +116,12 @@ export default function PotsSummary({ data, isLoading, error }: PotsSummaryProps
           />
           <div>
             <p className="text-sm text-grey-500 mb-2">Total Saved</p>
-            <p className="text-xl font-bold">{formatCurrency(potSummary?.total_saved_amount || 0)}</p>
+            <p className="text-xl font-bold">
+              {formatCurrency(potSummary?.total_saved_amount || 0, { maximumFractionDigits: 0, minimumFractionDigits: 0 })}
+            </p>
           </div>
         </div>
-        <div className="grid grid-cols-2 grid-rows-2 gap-4 md:flex-[55%]">
+        <div className="grid grid-cols-2 gap-4 md:flex-[55%] auto-rows-fr">
           {potSummary?.pots?.map((pot) => (
             <PotItem
               key={pot.name}

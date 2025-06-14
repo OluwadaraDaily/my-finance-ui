@@ -46,20 +46,22 @@ export default function OverviewSummary({ data, isLoading, error }: OverviewSumm
   }
 
   const summary = data?.data
+
+  console.log("Summary =>", summary);
   
   return (
     <div className="flex flex-col md:flex-row md:gap-6">
       <div className="p-5 rounded-xl bg-grey-900 text-white w-full mb-3 md:mb-0">
         <p className="text-sm mb-3">Current Balance</p>
-        <p className="text-xl font-bold">{formatCurrency(summary?.net_amount ?? 0)}</p>
+        <p className="text-xl font-bold">{formatCurrency(summary?.net_amount ?? 0, { maximumFractionDigits: 0, minimumFractionDigits: 0 })}</p>
       </div>
       <div className="p-5 rounded-xl bg-white w-full mb-3 md:mb-0">
         <p className="text-sm mb-3 text-grey-500">Income</p>
-        <p className="text-xl font-bold">{formatCurrency(summary?.total_income ?? 0)}</p>
+        <p className="text-xl font-bold">{formatCurrency(summary?.total_income ?? 0, { maximumFractionDigits: 0, minimumFractionDigits: 0 })}</p>
       </div>
       <div className="p-5 rounded-xl bg-white w-full">
         <p className="text-sm mb-3 text-grey-500">Expenses</p>
-        <p className="text-xl font-bold">{formatCurrency(summary?.total_expense ?? 0)}</p>
+        <p className="text-xl font-bold">{formatCurrency(summary?.total_expense ?? 0, { maximumFractionDigits: 0, minimumFractionDigits: 0 })}</p>
       </div>
     </div>
   )
