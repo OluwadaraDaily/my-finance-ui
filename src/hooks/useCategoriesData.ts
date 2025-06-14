@@ -12,9 +12,13 @@ export const useCategoriesData = () => {
     queryFn: () => potsService.getPots(),
   });
 
-  const budgets = budgetsResponse?.data || [];
-  const pots = potsResponse?.data || [];
-  const categories = [...budgets, ...pots];
+  const budgets = budgetsResponse?.data ?? [];
+  const pots = potsResponse?.data ?? [];
+  
+  // Ensure we're working with arrays before spreading
+  const categories = Array.isArray(budgets) && Array.isArray(pots) 
+    ? [...budgets, ...pots]
+    : [];
 
   return { budgets, pots, categories };
 }

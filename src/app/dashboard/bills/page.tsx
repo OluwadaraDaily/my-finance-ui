@@ -46,7 +46,14 @@ export default function BillsPage() {
   };
 
   return (
-    <div className="w-[95%] md:w-[90%] mx-auto">
+    <div className="relative w-[95%] md:w-[90%] mx-auto">
+      {/* Glassmorphism Overlay */}
+      <div className="absolute inset-0 z-50 backdrop-blur-xs bg-white/30 flex items-center justify-center rounded-xl">
+        <div className="bg-white/80 backdrop-blur-lg rounded-xl px-12 py-8 shadow-2xl transform rotate-[-5deg]">
+          <h2 className="text-4xl md:text-6xl font-bold text-gray-800">Coming Soon</h2>
+        </div>
+      </div>
+      
       {/* Header */}
       <div className="flex items-center justify-between mb-8">
         <h1 className="text-xl font-semibold">Recurring Bills</h1>
