@@ -1,3 +1,5 @@
+import { formatCurrency } from "@/utils/format";
+
 export default function PotItem({
   color,
   label,
@@ -31,7 +33,7 @@ export default function PotItem({
       />
       <div>
         <p className="text-xs mb-1">{label}</p>
-        <p className="text-sm font-bold">₦{amount}</p>
+        <p className="text-sm font-bold">{formatCurrency(amount)}</p>
       </div>
     </div>
   )

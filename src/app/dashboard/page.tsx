@@ -11,7 +11,7 @@ export default function Dashboard() {
   const {
     transactionSummary,
     recentTransactions,
-    budgets,
+    budgetsSummary,
     potSummary,
   } = useDashboardData()
 
@@ -40,9 +40,9 @@ export default function Dashboard() {
         </div>
         <div className="flex flex-col gap-4 lg:flex-[50%]">
           <BudgetsSummary 
-            data={budgets.data}
-            isLoading={budgets.isLoading}
-            error={budgets.error}
+            data={budgetsSummary.data}
+            isLoading={budgetsSummary.isLoading}
+            error={budgetsSummary.error}
           />
           <RecurringBillsSummary />
         </div>

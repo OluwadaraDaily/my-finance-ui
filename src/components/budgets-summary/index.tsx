@@ -4,10 +4,11 @@ import { TertiaryButton, PrimaryButton } from "../button";
 import PotItem from "../pots-summary/pot-item";
 import dynamic from "next/dynamic";
 import BudgetsChartFallback from "./budget-chart-fallback";
-import { Budget } from "@/lib/api/services/budgets/types";
+import { BudgetSummary } from "@/lib/api/services/budgets/types";
 import Image from "next/image";
 import { APIResponse } from "@/types/auth";
 import { AlertCircle } from "lucide-react";
+import { BudgetChartData, ChartBudget } from "@/types/budgets";
 
 const BudgetsChart = dynamic(
   () => import("./budgets-chart").then(mod => mod.BudgetsChart),
@@ -17,8 +18,14 @@ const BudgetsChart = dynamic(
   }
 );
 
+const adaptBudgetSummary = (summary: BudgetSummary): BudgetChartData =>({
+    total: summary.total_budget_amount,
+    spent: summary.total_spent_amount,
+    budgets: summary.budgets
+});
+
 interface BudgetsSummaryProps {
-  data?: APIResponse<Budget[]>
+  data?: APIResponse<BudgetSummary>
   isLoading: boolean
   error: Error | null
 }
@@ -66,7 +73,9 @@ export default function BudgetsSummary({ data, isLoading, error }: BudgetsSummar
     );
   }
 
-  const budgets = data?.data
+  const budgets = data?.data?.budgets
+  const summary = data?.data;
+  const chartData = summary ? adaptBudgetSummary(summary) : undefined;
 
   // If there are no budgets, show the create budget button
   if (!budgets?.length) {
@@ -106,15 +115,19 @@ export default function BudgetsSummary({ data, isLoading, error }: BudgetsSummar
       </div>
       <div className="flex flex-col md:flex-row gap-4">
         <div className="relative w-[300px] h-[300px] md:flex-[80%]">
-          <BudgetsChart />
+          <BudgetsChart
+            data={chartData}
+            isLoading={isLoading}
+            error={error}
+          />
         </div>
         <div className="grid grid-cols-2 grid-rows-2 gap-4 md:flex-[20%] md:grid-cols-1 md:grid-rows-4">
-          {budgets.map((item: Budget) => (
+          {budgets.map((budget: ChartBudget) => (
             <PotItem
-              key={item.id}
-              label={item.name}
-              amount={item.total_amount}
-              color={"#000000"}
+              key={budget.label}
+              label={budget.label}
+              amount={budget.amount}
+              color={budget.color}
               loading={false}
             />
           ))}

@@ -1,8 +1,10 @@
 "use client"
+import React from 'react';
 import { PieChart, Pie, Cell, Label } from 'recharts';
 import { formatCurrency } from '@/utils/format';
 import { BudgetChartData } from '@/types/budgets';
 import { AlertCircle } from 'lucide-react';
+import { ResponsiveContainer } from 'recharts';
 
 interface BudgetsChartProps {
   data?: BudgetChartData;
@@ -36,8 +38,32 @@ export function BudgetsChart({ data, isLoading, error }: BudgetsChartProps) {
 
   if (!data?.budgets.length) {
     return (
-      <div className="flex flex-col items-center justify-center h-[300px]">
-        <div className="text-gray-500">No budget data available.</div>
+      <div className="flex flex-col items-center justify-center h-[300px] relative">
+        {/* Placeholder Chart */}
+        <div className="absolute inset-0 opacity-10">
+          <ResponsiveContainer width="100%" height="100%">
+            <PieChart>
+              <Pie
+                data={[
+                  { name: "Section 1", value: 30 },
+                  { name: "Section 2", value: 25 },
+                  { name: "Section 3", value: 20 },
+                  { name: "Section 4", value: 25 },
+                ]}
+                dataKey="value"
+                nameKey="name"
+                cx="50%"
+                cy="50%"
+                innerRadius={60}
+                outerRadius={80}
+                fill="#808080"
+                stroke="none"
+              />
+            </PieChart>
+          </ResponsiveContainer>
+        </div>
+        <div className="text-gray-500 z-10">No budget data available.</div>
+        <div className="text-sm text-gray-400 mt-2 z-10">Create a budget to see your spending breakdown.</div>
       </div>
     );
   }

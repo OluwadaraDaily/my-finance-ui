@@ -18,9 +18,9 @@ export function useDashboardData() {
     staleTime: 2 * 60 * 1000,
   });
 
-  const budgets = useQuery({
+  const budgetsSummary = useQuery({
     queryKey: ['budgets'],
-    queryFn: () => budgetService.getBudgets({ limit: 4 }),
+    queryFn: () => budgetService.getBudgetSummary(),
     staleTime: 5 * 60 * 1000,
   });
 
@@ -33,8 +33,8 @@ export function useDashboardData() {
   return {
     transactionSummary,
     recentTransactions,
-    budgets,
+    budgetsSummary,
     potSummary,
-    isLoading: transactionSummary.isLoading || recentTransactions.isLoading || budgets.isLoading || potSummary.isLoading,
+    isLoading: transactionSummary.isLoading || recentTransactions.isLoading || budgetsSummary.isLoading || potSummary.isLoading,
   };
 } 
