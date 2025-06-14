@@ -19,7 +19,16 @@ const editBudgetSchema = z.object({
   color: z.string().min(1, "Color is required"),
   start_date: z.date(),
   end_date: z.date(),
-});
+}).refine(
+  (data) => {
+    // Ensure end_date is not before start_date
+    return data.end_date >= data.start_date;
+  },
+  {
+    message: "End date cannot be before start date",
+    path: ["end_date"], // This will show the error on the end_date field
+  }
+);
 
 type EditBudgetFormData = z.infer<typeof editBudgetSchema>;
 

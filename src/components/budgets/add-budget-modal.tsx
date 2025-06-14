@@ -6,9 +6,10 @@ import z from "zod";
 import { useForm, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { COLOR_TAG_OPTIONS } from "@/data/budget";
-import { formatFormDatesForAPI } from "@/utils/date";
+import { formatFormDatesForAPI, formatDateForInput } from "@/utils/date";
 import { useMutation } from "@tanstack/react-query";
 import { budgetService } from "@/lib/api/services/budgets";
+import { toast } from "sonner";
 
 const addBudgetSchema = z.object({
   name: z.string().min(1, "Name is required"),
@@ -17,10 +18,17 @@ const addBudgetSchema = z.object({
   start_date: z.date(),
   end_date: z.date(),
   color: z.string().min(1, "Color is required"),
-})
+}).refine(
+  (data) => {
+    return data.end_date >= data.start_date;
+  },
+  {
+    message: "End date cannot be before start date",
+    path: ["end_date"], // This will show the error on the end_date field
+  }
+);
 
 type AddBudgetFormData = z.infer<typeof addBudgetSchema>;
-
 
 export default function AddBudgetModal({
   isOpen,
@@ -28,17 +36,16 @@ export default function AddBudgetModal({
 }: {
   isOpen: boolean;
   setIsOpen: (isOpen: boolean) => void;
-  }) {
+}) {
   const { register, handleSubmit, control, formState: { errors, isValid } } = useForm<AddBudgetFormData>({
     resolver: zodResolver(addBudgetSchema),
     mode: "onChange",
-  })
+  });
 
   const { mutate: createBudget, isPending } = useMutation({
     mutationFn: async (data: AddBudgetFormData) => {
       const apiData = formatFormDatesForAPI(data, ['start_date', 'end_date']);
       const response = await budgetService.createBudget(apiData);
-      console.log("response", response);
       return response;
     },
     onSuccess: () => {
@@ -46,6 +53,12 @@ export default function AddBudgetModal({
       // Bubble up an event to inform parent component to refetch budgets
       const event = new CustomEvent("fetchBudgets");
       document.dispatchEvent(event);
+      toast.success("Budget created successfully");
+    },
+    onError: (error) => {
+      toast.error("Failed to create budget", {
+        description: error.message || "An error occurred while creating the budget",
+      });
     },
   });
 
@@ -93,12 +106,11 @@ export default function AddBudgetModal({
             control={control}
             render={({ field }) => (
               <SelectInput
-                options={COLOR_TAG_OPTIONS}
                 label="Color Tag"
+                options={COLOR_TAG_OPTIONS}
                 value={field.value}
                 onChange={field.onChange}
                 onBlur={field.onBlur}
-                name={field.name}
                 error={errors.color?.message}
                 withColorTag
               />
@@ -106,30 +118,55 @@ export default function AddBudgetModal({
           />
           <div className="flex gap-4">
             <div className="flex-1">
-              <TextInput
-                label="Start Date"
-                type="date"
-                {...register("start_date", { valueAsDate: true })}
-                error={errors.start_date?.message}
+              <Controller
+                name="start_date"
+                control={control}
+                render={({ field: { onChange, value, ...field } }) => (
+                  <TextInput
+                    label="Start Date"
+                    type="date"
+                    value={value ? formatDateForInput(value) : ''}
+                    onChange={(e) => {
+                      const date = e.target.valueAsDate;
+                      if (date) {
+                        onChange(date);
+                      }
+                    }}
+                    error={errors.start_date?.message}
+                    {...field}
+                  />
+                )}
               />
             </div>
             <div className="flex-1">
-              <TextInput
-                label="End Date"
-                type="date"
-                {...register("end_date", { valueAsDate: true })}
-                error={errors.end_date?.message}
+              <Controller
+                name="end_date"
+                control={control}
+                render={({ field: { onChange, value, ...field } }) => (
+                  <TextInput
+                    label="End Date"
+                    type="date"
+                    value={value ? formatDateForInput(value) : ''}
+                    onChange={(e) => {
+                      const date = e.target.valueAsDate;
+                      if (date) {
+                        onChange(date);
+                      }
+                    }}
+                    error={errors.end_date?.message}
+                    {...field}
+                  />
+                )}
               />
             </div>
           </div>
           <PrimaryButton
-            label="Add Budget"
+            label={isPending ? "Creating Budget..." : "Create Budget"}
             type="submit"
             disabled={!isValid || isPending}
           />
         </form>
-
       </div>
     </Modal>
-  )
+  );
 }
