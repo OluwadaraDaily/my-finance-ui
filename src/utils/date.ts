@@ -9,11 +9,27 @@ export function formatDateForAPI(date: Date): string {
 
 /**
  * Converts a date from backend API format to Date object
+ * Ensures the date is interpreted in the local timezone
  * @param dateString - Date string in backend format
  * @returns Date object
  */
 export function parseDateFromAPI(dateString: string): Date {
-  return new Date(dateString);
+  const date = new Date(dateString);
+  const userTimezoneOffset = date.getTimezoneOffset() * 60000;
+  return new Date(date.getTime() + userTimezoneOffset);
+}
+
+/**
+ * Formats a date for HTML date input (YYYY-MM-DD)
+ * Ensures the date is formatted in the local timezone
+ * @param date - Date object to format
+ * @returns Date string in YYYY-MM-DD format
+ */
+export function formatDateForInput(date: Date): string {
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, '0');
+  const day = String(date.getDate()).padStart(2, '0');
+  return `${year}-${month}-${day}`;
 }
 
 /**
