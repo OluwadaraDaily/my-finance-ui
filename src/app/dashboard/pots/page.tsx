@@ -101,7 +101,7 @@ export default function PotsPage() {
   const [isWithdrawFromPotModalOpen, setIsWithdrawFromPotModalOpen] = useState(false);
   const [selectedPot, setSelectedPot] = useState<Pot | null>(null);
 
-  const { data: potsResponse, isLoading, error } = useQuery({
+  const { data: potsResponse, isLoading, error, isFetching } = useQuery({
     queryKey: ["pots"],
     queryFn: () => potsService.getPots(),
   });
@@ -141,7 +141,7 @@ export default function PotsPage() {
     setIsWithdrawFromPotModalOpen(true)
   }
 
-  if (isLoading) {
+  if (isLoading || isFetching) {
     return <LoadingSkeleton />;
   }
 
