@@ -228,6 +228,7 @@ export default function BudgetsPage() {
   const { 
     data: budgetsResponse, 
     isLoading: isBudgetsLoading,
+    isFetching,
     error: budgetsError 
   } = useQuery({
     queryKey: ["budgets"],
@@ -265,7 +266,7 @@ export default function BudgetsPage() {
     setSelectedBudget(budget);
   };
 
-  if (isBudgetsLoading) {
+  if (isBudgetsLoading || isFetching) {
     return <LoadingState />;
   }
 

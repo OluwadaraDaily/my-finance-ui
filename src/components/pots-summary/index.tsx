@@ -8,15 +8,15 @@ import { Pot, PotSummary } from "@/lib/api/services/pots/types";
 import { formatCurrency } from "@/utils/format";
 import { AlertCircle } from "lucide-react";
 import { APIResponse } from "@/types/auth";
+import { UseQueryResult } from "@tanstack/react-query";
 
 interface PotsSummaryProps {
-  data?: APIResponse<PotSummary>
-  isLoading: boolean
-  error: Error | null
+  data: UseQueryResult<APIResponse<PotSummary>, Error>
 }
 
-export default function PotsSummary({ data, isLoading, error }: PotsSummaryProps) {
+export default function PotsSummary({ data }: PotsSummaryProps) {
   const router = useRouter();
+  const { data: summaryData, isLoading, isFetching, error } = data
 
   const transformPotToItem = (pot: Pot): IPotItem => ({
     label: pot.name,
@@ -24,7 +24,7 @@ export default function PotsSummary({ data, isLoading, error }: PotsSummaryProps
     color: pot.color || '#000000'
   });
 
-  if (isLoading) {
+  if (isLoading || isFetching) {
     return (
       <div className="py-6 px-5 bg-white rounded-xl">
         <div className="flex items-center justify-between mb-5">
@@ -66,7 +66,7 @@ export default function PotsSummary({ data, isLoading, error }: PotsSummaryProps
     );
   }
 
-  const potSummary = data?.data
+  const potSummary = summaryData?.data
 
   // If there are no pots, show the create pot button
   if (!potSummary?.pots?.length) {

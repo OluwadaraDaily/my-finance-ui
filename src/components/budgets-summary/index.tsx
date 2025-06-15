@@ -9,6 +9,7 @@ import Image from "next/image";
 import { APIResponse } from "@/types/auth";
 import { AlertCircle } from "lucide-react";
 import { BudgetChartData, ChartBudget } from "@/types/budgets";
+import { UseQueryResult } from "@tanstack/react-query";
 
 const BudgetsChart = dynamic(
   () => import("./budgets-chart").then(mod => mod.BudgetsChart),
@@ -25,15 +26,14 @@ const adaptBudgetSummary = (summary: BudgetSummary): BudgetChartData =>({
 });
 
 interface BudgetsSummaryProps {
-  data?: APIResponse<BudgetSummary>
-  isLoading: boolean
-  error: Error | null
+  data: UseQueryResult<APIResponse<BudgetSummary>, Error>
 }
 
-export default function BudgetsSummary({ data, isLoading, error }: BudgetsSummaryProps) {
+export default function BudgetsSummary({ data }: BudgetsSummaryProps) {
   const router = useRouter();
+  const { data: summaryData, isLoading, isFetching, error } = data
 
-  if (isLoading) {
+  if (isLoading || isFetching) {
     return (
       <div className="bg-white rounded-xl p-8">
         <div className="flex items-center justify-between mb-5">
@@ -73,8 +73,8 @@ export default function BudgetsSummary({ data, isLoading, error }: BudgetsSummar
     );
   }
 
-  const budgets = data?.data?.budgets
-  const summary = data?.data;
+  const budgets = summaryData?.data?.budgets
+  const summary = summaryData?.data;
   const chartData = summary ? adaptBudgetSummary(summary) : undefined;
 
   // If there are no budgets, show the create budget button

@@ -75,7 +75,7 @@ export default function TransactionsPage() {
   const [currentPage, setCurrentPage] = useState(1);
   const [isAddTransactionModalOpen, setIsAddTransactionModalOpen] = useState(false);
 
-  const { data: transactionsResponse, isLoading } = useQuery({
+  const { data: transactionsResponse, isLoading, isFetching } = useQuery({
     queryKey: ["transactions"],
     queryFn: () => transactionsService.getTransactions(),
     staleTime: 0,
@@ -193,7 +193,7 @@ export default function TransactionsPage() {
     <>
       <div className="w-[95%] md:w-[90%] mx-auto">
         <PageHeader />
-        {isLoading ? <LoadingSkeleton /> :
+        {isLoading || isFetching ? <LoadingSkeleton /> :
           transactions.length === 0 ? <EmptyState /> : <TransactionList />
         }
       </div>

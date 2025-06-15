@@ -4,15 +4,16 @@ import { formatCurrency } from "@/utils/format"
 import { AlertCircle } from "lucide-react"
 import { APIResponse } from "@/types/auth"
 import { TransactionSummary } from "@/lib/api/services/transactions/types"
+import { UseQueryResult } from "@tanstack/react-query"
 
 interface OverviewSummaryProps {
-  data?: APIResponse<TransactionSummary>
-  isLoading: boolean
-  error: Error | null
+  data: UseQueryResult<APIResponse<TransactionSummary>, Error>
 }
 
-export default function OverviewSummary({ data, isLoading, error }: OverviewSummaryProps) {
-  if (isLoading) {
+export default function OverviewSummary({ data }: OverviewSummaryProps) {
+  const { data: summaryData, isLoading, isFetching, error } = data
+
+  if (isLoading || isFetching) {
     return (
       <div className="flex flex-col md:flex-row md:gap-6">
         <div className="p-5 rounded-xl bg-grey-900 text-white w-full mb-3 md:mb-0">
@@ -45,9 +46,7 @@ export default function OverviewSummary({ data, isLoading, error }: OverviewSumm
     )
   }
 
-  const summary = data?.data
-
-  console.log("Summary =>", summary);
+  const summary = summaryData?.data
   
   return (
     <div className="flex flex-col md:flex-row md:gap-6">

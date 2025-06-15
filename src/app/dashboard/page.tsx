@@ -19,31 +19,15 @@ export default function Dashboard() {
     <div className="w-[95%] md:w-[90%] lg:w-[95%] mx-auto">
       <h1 className="text-xl font-semibold">Overview</h1>
       <div className="my-8">
-        <OverviewSummary 
-          data={transactionSummary.data}
-          isLoading={transactionSummary.isLoading}
-          error={transactionSummary.error}
-        />
+        <OverviewSummary data={transactionSummary} />
       </div>
       <div className="flex flex-col gap-4 lg:flex-row lg:items-stretch">
         <div className="flex flex-col gap-4 lg:flex-[50%]">
-          <PotsSummary 
-            data={potSummary.data}
-            isLoading={potSummary.isLoading}
-            error={potSummary.error}
-          />
-          <TransactionsSummary 
-            data={recentTransactions.data}
-            isLoading={recentTransactions.isLoading}
-            error={recentTransactions.error}
-          />
+          <PotsSummary data={potSummary} />
+          <TransactionsSummary data={recentTransactions} />
         </div>
         <div className="flex flex-col gap-4 lg:flex-[50%]">
-          <BudgetsSummary 
-            data={budgetsSummary.data}
-            isLoading={budgetsSummary.isLoading}
-            error={budgetsSummary.error}
-          />
+          <BudgetsSummary data={budgetsSummary} />
           <RecurringBillsSummary />
         </div>
       </div>

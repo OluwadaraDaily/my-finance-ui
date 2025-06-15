@@ -36,5 +36,6 @@ export function useDashboardData() {
     budgetsSummary,
     potSummary,
     isLoading: transactionSummary.isLoading || recentTransactions.isLoading || budgetsSummary.isLoading || potSummary.isLoading,
+    isFetching: transactionSummary.isFetching || recentTransactions.isFetching || budgetsSummary.isFetching || potSummary.isFetching,
   };
 } 

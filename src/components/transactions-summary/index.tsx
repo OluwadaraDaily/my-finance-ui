@@ -7,17 +7,17 @@ import { AlertCircle } from "lucide-react";
 import { Transaction } from "@/lib/api/services/transactions/types";
 import Image from "next/image";
 import { APIResponse } from "@/types/auth";
+import { UseQueryResult } from "@tanstack/react-query";
 
 interface TransactionsSummaryProps {
-  data?: APIResponse<Transaction[]>
-  isLoading: boolean
-  error: Error | null
+  data: UseQueryResult<APIResponse<Transaction[]>, Error>
 }
 
-export default function TransactionsSummary({ data, isLoading, error }: TransactionsSummaryProps) {
+export default function TransactionsSummary({ data }: TransactionsSummaryProps) {
   const router = useRouter();
+  const { data: summaryData, isLoading, isFetching, error } = data
 
-  if (isLoading) {
+  if (isLoading || isFetching) {
     return (
       <div className="bg-white rounded-xl p-8 relative">
         <div className="flex items-center justify-between mb-8">
@@ -55,7 +55,7 @@ export default function TransactionsSummary({ data, isLoading, error }: Transact
     );
   }
 
-  const transactions = data?.data
+  const transactions = summaryData?.data
 
   if (!transactions?.length) {
     return (
