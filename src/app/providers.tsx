@@ -13,7 +13,7 @@ export default function Providers({ children }: { children: React.ReactNode }) {
           queries: {
             staleTime: 5 * 60 * 1000,
             gcTime: 10 * 60 * 1000,
-            refetchOnWindowFocus: false,
+            refetchOnWindowFocus: true,
             retry: (failureCount, error: Error) => {
               if ('status' in error && (error as { status: number }).status === 404) {
                 return false;

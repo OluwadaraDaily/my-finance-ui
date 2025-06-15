@@ -78,7 +78,6 @@ export default function TransactionsPage() {
   const { data: transactionsResponse, isLoading } = useQuery({
     queryKey: ["transactions"],
     queryFn: () => transactionsService.getTransactions(),
-    refetchOnWindowFocus: true,
     staleTime: 0,
   });
 
