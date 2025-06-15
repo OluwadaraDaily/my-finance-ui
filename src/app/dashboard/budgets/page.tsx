@@ -205,7 +205,7 @@ function BudgetCardsSection({
 }) {
   return (
     <div className="flex flex-col gap-4 lg:flex-1">
-      {budgets.map((budget: Budget) => (
+      {Array.isArray(budgets) && budgets.map((budget: Budget) => (
         <BudgetCard
           key={budget.id}
           budget={budget}
