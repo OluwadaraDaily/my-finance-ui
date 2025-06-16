@@ -4,7 +4,7 @@ import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { TextInput, SelectInput, TextArea } from "../input";
 import { PrimaryButton } from "../button";
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { formatFormDatesForAPI } from "@/utils/date";
 import { transactionsService } from "@/lib/api/services/transactions";
 import { TransactionType } from "@/lib/api/services/transactions/types";
@@ -29,7 +29,7 @@ const AddTransactionModal = (
   { isOpen, setIsOpen }:
   { isOpen: boolean, setIsOpen: (isOpen: boolean) => void }
 ) => {
-
+  const queryClient = useQueryClient();
   const {
     register,
     handleSubmit,
@@ -60,8 +60,7 @@ const AddTransactionModal = (
     onSuccess: () => {
       setIsOpen(false);
       // Bubble up an event to inform parent component to refetch transactions
-      const event = new CustomEvent("fetchTransactions");
-      document.dispatchEvent(event);
+      queryClient.invalidateQueries({ queryKey: ["transactions"] });
       toast.success("Transaction created successfully");
       reset();
     },
