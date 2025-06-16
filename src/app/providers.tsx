@@ -5,19 +5,27 @@ import { useState } from 'react'
 import { Toaster } from "@/components/ui/sonner"
 import { AuthProvider } from '@/context/AuthContext'
 
+// Define custom error type for API errors
+interface APIError extends Error {
+  response?: {
+    status?: number;
+  };
+}
+
 export default function Providers({ children }: { children: React.ReactNode }) {
   const [queryClient] = useState(
     () =>
       new QueryClient({
         defaultOptions: {
           queries: {
-            staleTime: 30 * 1000,
-            gcTime: 5 * 60 * 1000,
-            refetchOnWindowFocus: true,
+            staleTime: 5 * 60 * 1000, // 5 minutes - data stays fresh longer
+            gcTime: 30 * 60 * 1000,   // 30 minutes - keep unused data in cache longer
+            refetchOnWindowFocus: false, // Only refetch when explicitly needed
             refetchOnMount: true,
             refetchOnReconnect: true,
-            retry: (failureCount, error: Error) => {
-              if ('status' in error && (error as { status: number }).status === 404) {
+            retry: (failureCount, error: APIError) => {
+              // Don't retry on 404s and auth errors
+              if (error?.response?.status === 404 || error?.response?.status === 401 || error?.response?.status === 403) {
                 return false;
               }
               return failureCount < 3;
@@ -25,6 +33,10 @@ export default function Providers({ children }: { children: React.ReactNode }) {
           },
           mutations: {
             retry: 1,
+            // Add default error handler for mutations
+            onError: (error: Error) => {
+              console.error('Mutation error:', error.message);
+            },
           },
         },
       })
