@@ -9,25 +9,9 @@ import { APIResponse } from "@/types/auth";
 import { AlertCircle } from "lucide-react";
 import { BudgetChartData, ChartBudget } from "@/types/budgets";
 import { UseQueryResult } from "@tanstack/react-query";
-import { memo, useMemo, useCallback } from "react";
+import { memo, useCallback } from "react";
 import PotItem from "../pots-summary/pot-item";
-
-// Custom hook for budget data processing
-function useBudgetData(summaryData?: APIResponse<BudgetSummary>) {
-  return useMemo(() => {
-    if (!summaryData?.data) return null;
-    
-    const summary = summaryData.data;
-    return {
-      budgets: summary.budgets,
-      chartData: {
-        total: summary.total_budget_amount,
-        spent: summary.total_spent_amount,
-        budgets: summary.budgets
-      }
-    };
-  }, [summaryData]);
-}
+import { useBudgetData } from "@/hooks/useBudgetData";
 
 // Lazy load chart component
 const BudgetsChart = dynamic(

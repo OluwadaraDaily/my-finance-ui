@@ -8,45 +8,7 @@ import { Transaction } from "@/lib/api/services/transactions/types";
 import { BrushCleaning } from "lucide-react";
 import { ComponentLoader } from "@/components/ui/component-loader";
 import { LoadingSkeleton } from "@/components/ui/loading-skeleton";
-
-// Custom hook for transaction sorting and pagination
-function useTransactionProcessing(transactions: Transaction[], sortOption: string, currentPage: number) {
-  // Memoize sorted data
-  const processedData = useMemo(() => {
-    return [...transactions].sort((a, b) => {
-      switch (sortOption) {
-        case "Latest":
-          return new Date(b.transaction_date).getTime() - new Date(a.transaction_date).getTime();
-        case "Oldest":
-          return new Date(a.transaction_date).getTime() - new Date(b.transaction_date).getTime();
-        case "A to Z":
-          return a.recipient.localeCompare(b.recipient);
-        case "Z to A":
-          return b.recipient.localeCompare(a.recipient);
-        case "Highest":
-          return b.amount - a.amount;
-        case "Lowest":
-          return a.amount - b.amount;
-        default:
-          return 0;
-      }
-    });
-  }, [sortOption, transactions]);
-
-  // Memoize paginated data
-  const paginatedData = useMemo(() => {
-    const startIndex = (currentPage - 1) * PER_PAGE;
-    const endIndex = startIndex + PER_PAGE;
-    return processedData.slice(startIndex, endIndex);
-  }, [processedData, currentPage]);
-
-  const totalPages = useMemo(() => 
-    Math.ceil(processedData.length / PER_PAGE),
-    [processedData]
-  );
-
-  return { processedData, paginatedData, totalPages };
-}
+import { useTransactionProcessing } from "@/hooks/useTransactionProcessing";
 
 // Memoized components
 const MemoizedSearchBar = memo(dynamic(() => import("@/components/transactions/search-bar")));
@@ -83,8 +45,6 @@ const AddTransactionModal = dynamic(
   }
 );
 const PrimaryButton = dynamic(() => import("@/components/button/primary-btn"));
-
-const PER_PAGE = 10;
 
 // Memoized empty state
 const EmptyState = memo(() => (
