@@ -3,8 +3,9 @@
 import dynamic from "next/dynamic"
 import { Suspense } from "react"
 import { useDashboardData } from "@/hooks/useDashboardData"
-import { AlertCircle } from "lucide-react"
 import { useEffect } from "react"
+import { ComponentLoader } from "@/components/ui/component-loader"
+import { ErrorState } from "@/components/ui/error-state"
 
 // Lazy load components
 const OverviewSummary = dynamic(
@@ -46,44 +47,6 @@ const RecurringBillsSummary = dynamic(
     ssr: false
   }
 )
-
-// Loading component with skeleton
-function ComponentLoader({ className = "" }: { className?: string }) {
-  return (
-    <div className={`bg-white rounded-xl p-8 animate-pulse ${className}`}>
-      <div className="flex items-center justify-between mb-5">
-        <div className="h-6 w-24 bg-gray-200 rounded"></div>
-        <div className="h-6 w-24 bg-gray-200 rounded"></div>
-      </div>
-      <div className="space-y-4">
-        <div className="h-4 w-3/4 bg-gray-200 rounded"></div>
-        <div className="h-4 w-1/2 bg-gray-200 rounded"></div>
-      </div>
-    </div>
-  )
-}
-
-function ErrorState({ errors }: { errors: (Error | null)[] }) {
-  const validErrors = errors.filter((error): error is Error => error !== null);
-  
-  if (validErrors.length === 0) return null;
-  
-  return (
-    <div className="rounded-xl bg-red-50 border border-red-200 p-4 mb-8">
-      <div className="flex items-center gap-2 mb-2">
-        <AlertCircle className="w-5 h-5 text-red-500" />
-        <h2 className="font-semibold text-red-700">Error Loading Dashboard Data</h2>
-      </div>
-      <ul className="list-disc list-inside space-y-1">
-        {validErrors.map((error, index) => (
-          <li key={index} className="text-sm text-red-600">
-            {error.message}
-          </li>
-        ))}
-      </ul>
-    </div>
-  )
-}
 
 export default function Dashboard() {
   const {

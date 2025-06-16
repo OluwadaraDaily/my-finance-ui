@@ -6,6 +6,8 @@ import { useQuery } from "@tanstack/react-query";
 import { transactionsService } from "@/lib/api/services/transactions";
 import { Transaction } from "@/lib/api/services/transactions/types";
 import { BrushCleaning } from "lucide-react";
+import { ComponentLoader } from "@/components/ui/component-loader";
+import { LoadingSkeleton } from "@/components/ui/loading-skeleton";
 
 // Custom hook for transaction sorting and pagination
 function useTransactionProcessing(transactions: Transaction[], sortOption: string, currentPage: number) {
@@ -56,7 +58,7 @@ MemoizedSort.displayName = 'MemoizedSort';
 const MemoizedTransactionListMobile = memo(dynamic(
   () => import("@/components/transactions/transaction-list-mobile"),
   {
-    loading: () => <ComponentLoader />,
+    loading: () => <ComponentLoader className="h-[400px]" />,
     ssr: false
   }
 ));
@@ -65,7 +67,7 @@ MemoizedTransactionListMobile.displayName = 'MemoizedTransactionListMobile';
 const MemoizedTransactionsTable = memo(dynamic(
   () => import("@/components/transactions/transactions-table"),
   {
-    loading: () => <ComponentLoader />,
+    loading: () => <ComponentLoader className="h-[400px]" />,
     ssr: false
   }
 ));
@@ -83,44 +85,6 @@ const AddTransactionModal = dynamic(
 const PrimaryButton = dynamic(() => import("@/components/button/primary-btn"));
 
 const PER_PAGE = 10;
-
-// Memoized loading component
-const ComponentLoader = memo(function ComponentLoader() {
-  return (
-    <div className="animate-pulse">
-      <div className="h-10 bg-gray-200 rounded-lg w-full mb-4"></div>
-      {[...Array(5)].map((_, i) => (
-        <div key={i} className="mb-4">
-          <div className="h-16 bg-gray-200 rounded-lg w-full"></div>
-        </div>
-      ))}
-    </div>
-  );
-});
-
-// Memoized loading skeleton
-const LoadingSkeleton = memo(() => (
-  <div className="w-[95%] md:w-[90%] mx-auto">
-    <div className="flex items-center justify-between mb-8">
-      <div className="h-8 w-32 bg-gray-200 rounded animate-pulse"></div>
-      <div className="h-10 w-32 bg-gray-200 rounded animate-pulse"></div>
-    </div>
-    <div className="py-6 bg-white rounded-xl">
-      <div className="w-[90%] mx-auto">
-        <div className="flex items-center gap-4 md:gap-6 justify-between mb-8">
-          <div className="md:flex-[30%] lg:flex-[45%]">
-            <div className="h-10 bg-gray-200 rounded animate-pulse"></div>
-          </div>
-          <div className="flex items-center gap-6 md:flex-[70%] lg:flex-[55%] md:justify-end">
-            <div className="h-10 w-32 bg-gray-200 rounded animate-pulse"></div>
-          </div>
-        </div>
-        <ComponentLoader />
-      </div>
-    </div>
-  </div>
-));
-LoadingSkeleton.displayName = 'LoadingSkeleton';
 
 // Memoized empty state
 const EmptyState = memo(() => (

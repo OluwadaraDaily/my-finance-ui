@@ -14,6 +14,8 @@ import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { budgetService } from "@/lib/api/services/budgets";
 import { Budget, BudgetSummary } from "@/lib/api/services/budgets/types";
 import { AlertCircle, PiggyBank } from "lucide-react";
+import { ErrorState } from "@/components/ui/error-state";
+import { LoadingSkeleton } from "@/components/ui/loading-skeleton";
 
 // Adapter function to convert API BudgetSummary to BudgetChartData
 const adaptBudgetSummary = (summary: BudgetSummary): BudgetChartData =>({
@@ -29,93 +31,6 @@ const BudgetsChart = dynamic(
     loading: () => <BudgetsChartFallback />
   }
 );
-
-// Loading state component
-function LoadingState() {
-  return (
-    <div className="w-[95%] md:w-[90%] mx-auto">
-      <div className="animate-pulse">
-        <div className="flex justify-between items-center mb-8">
-          <div className="h-8 w-32 bg-gray-200 rounded" />
-          <div className="h-10 w-32 bg-gray-200 rounded" />
-        </div>
-        
-        <div className="grid md:grid-cols-[1fr_1fr] gap-8">
-          {/* Left column - Donut chart */}
-          <div className="bg-white rounded-xl p-6 h-[600px]">
-            <div className="flex justify-center">
-              <BudgetsChartFallback />
-            </div>
-            <div className="mt-6">
-              <div className="h-5 w-40 bg-gray-200 rounded mb-4" />
-              {/* Spending summary items */}
-              {Array.from({ length: 4 }).map((_, i) => (
-                <div key={i} className="flex justify-between items-center mb-4">
-                  <div className="h-4 w-24 bg-gray-200 rounded" />
-                  <div className="h-4 w-20 bg-gray-200 rounded" />
-                </div>
-              ))}
-            </div>
-          </div>
-
-          {/* Right column - Budget cards */}
-          <div className="space-y-6">
-            {Array.from({ length: 4 }).map((_, i) => (
-              <div key={i} className="bg-white rounded-xl p-6">
-                <div className="flex justify-between items-center mb-6">
-                  <div className="h-5 w-32 bg-gray-200 rounded" />
-                  <div className="h-8 w-8 bg-gray-200 rounded" />
-                </div>
-                <div className="h-2 w-full bg-gray-200 rounded-full mb-4" />
-                <div className="flex justify-between mb-6">
-                  <div className="h-4 w-20 bg-gray-200 rounded" />
-                  <div className="h-4 w-20 bg-gray-200 rounded" />
-                </div>
-                {/* Latest spending section */}
-                <div className="mt-6">
-                  <div className="flex justify-between items-center mb-4">
-                    <div className="h-5 w-32 bg-gray-200 rounded" />
-                    <div className="h-5 w-16 bg-gray-200 rounded" />
-                  </div>
-                  {Array.from({ length: 3 }).map((_, j) => (
-                    <div key={j} className="mb-4">
-                      <div className="flex justify-between items-center">
-                        <div className="flex items-center gap-3">
-                          <div className="h-8 w-8 bg-gray-200 rounded-full" />
-                          <div className="h-4 w-24 bg-gray-200 rounded" />
-                        </div>
-                        <div className="flex flex-col items-end gap-1">
-                          <div className="h-4 w-16 bg-gray-200 rounded" />
-                          <div className="h-3 w-20 bg-gray-200 rounded" />
-                        </div>
-                      </div>
-                      {j !== 2 && <div className="w-full h-[1px] bg-gray-200 my-4" />}
-                    </div>
-                  ))}
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </div>
-    </div>
-  );
-}
-
-// Error state component
-function ErrorState({ error }: { error: unknown }) {
-  return (
-    <div className="flex flex-col md:flex-row md:gap-6">
-      <div className="p-5 rounded-xl bg-red-50 border border-red-200 text-app-red w-full mb-3 md:mb-0">
-        <div className="flex items-center gap-2 mb-2">
-          <AlertCircle className="w-5 h-5" />
-          <p className="font-semibold">Error loading budgets</p>
-        </div>
-        <p className="text-sm text-app-red">{error instanceof Error ? error.message : 'An unexpected error occurred'}</p>
-      </div>
-    </div>
-  );
-}
 
 // Empty state component
 function EmptyState({ onAddBudget }: { onAddBudget: () => void }) {
@@ -267,7 +182,7 @@ export default function BudgetsPage() {
   };
 
   if (isBudgetsLoading || isFetching) {
-    return <LoadingState />;
+    return <LoadingSkeleton />;
   }
 
   if (budgetsError) {
