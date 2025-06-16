@@ -18,7 +18,6 @@ const addTransactionSchema = z.object({
   type: z.nativeEnum(TransactionType),
   transaction_date: z.date(),
   budget_id: z.number().optional(),
-  pot_id: z.number().optional(),
   sender: z.string().optional(),
   recipient: z.string().optional(),
 })
@@ -44,7 +43,7 @@ const AddTransactionModal = (
 
   const transactionType = watch("type");
 
-  const { budgets, pots } = useCategoriesData();
+  const { budgets } = useCategoriesData();
 
   const { mutate: createTransaction, isPending } = useMutation({
     mutationFn: async (data: AddTransactionFormData) => {
@@ -144,10 +143,10 @@ const AddTransactionModal = (
             render={({ field }) => (
               <SelectInput
                 label="Budget"
-                options={budgets.map((budget) => ({
+                options={Array.isArray(budgets) ? budgets.map((budget) => ({
                   label: budget.name,
                   value: budget.id.toString(),
-                }))}
+                })) : []}
                 value={field.value ? field.value.toString() : ""}
                 onChange={(e) => {
                   const value = e.target.value;
@@ -156,28 +155,6 @@ const AddTransactionModal = (
                 onBlur={field.onBlur}
                 error={errors.budget_id?.message}
                 placeholder="Select budget"
-                required={false}
-              />
-            )}
-          />
-          <Controller
-            name="pot_id"
-            control={control}
-            render={({ field }) => (
-              <SelectInput
-                label="Pot"
-                options={pots.map((pot) => ({
-                  label: pot.name,
-                  value: pot.id.toString(),
-                }))}
-                value={field.value ? field.value.toString() : ""}
-                onChange={(e) => {
-                  const value = e.target.value;
-                  field.onChange(value === "" ? undefined : Number(value));
-                }}
-                onBlur={field.onBlur}
-                error={errors.pot_id?.message}
-                placeholder="Select pot"
                 required={false}
               />
             )}

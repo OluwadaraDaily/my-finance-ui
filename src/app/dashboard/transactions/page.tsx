@@ -46,8 +46,7 @@ const AddTransactionModal = dynamic(
 );
 const PrimaryButton = dynamic(() => import("@/components/button/primary-btn"));
 
-// Memoized empty state
-const EmptyState = memo(() => (
+const EmptyState = () => (
   <div className="py-6 bg-white rounded-xl">
     <div className="w-[90%] mx-auto text-center">
       <BrushCleaning
@@ -58,11 +57,10 @@ const EmptyState = memo(() => (
       <p className="text-gray-500 mb-6">Start adding your transactions to track your spending.</p>
     </div>
   </div>
-));
+);
 EmptyState.displayName = 'EmptyState';
 
-// Memoized page header
-const PageHeader = memo(({ onAddTransaction }: { onAddTransaction: () => void }) => (
+const PageHeader = ({ onAddTransaction }: { onAddTransaction: () => void }) => (
   <div className="flex items-center justify-between mb-8">
     <h1 className="text-xl font-semibold">Transactions</h1>
     <div>
@@ -72,7 +70,7 @@ const PageHeader = memo(({ onAddTransaction }: { onAddTransaction: () => void })
       />
     </div>
   </div>
-));
+);
 PageHeader.displayName = 'PageHeader';
 
 // Memoized transaction list component
