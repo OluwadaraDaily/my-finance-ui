@@ -28,9 +28,8 @@ export default function DashboardSidebar({ onCollapse }: DashboardSidebarProps) 
     router.push(item.url);
   };
 
-  const handleLogout = async () => {
-    await authService.logout();
-    router.push("/auth/login");
+  const handleLogout = () => {
+    authService.logout();
   };
 
   // Update activeItemId when pathname changes

@@ -57,13 +57,17 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   };
 
   const logout = async () => {
-    setIsLoading(true);
     try {
-      await authService.logout();
-    } finally {
+      // Clear auth state first
       setIsAuthenticated(false);
       setUser(null);
-      setIsLoading(false);
+      
+      // Then perform logout
+      await authService.logout();
+    } catch (error) {
+      console.error('Logout error:', error);
+      // Force navigation to login on error
+      window.location.href = '/auth/login';
     }
   };
 

@@ -42,22 +42,24 @@ export const authService = {
   },
 
   async logout(): Promise<void> {
-    try {
-      await api.post('/auth/logout', {
-        access_token: getCookie('access_token'),
-      });
-    } finally {
-      // Always clear cookies
-      await fetch('/api/auth/tokens', {
-        method: 'DELETE',
-        credentials: 'include',
-      });
+    const returnUrl = '/auth/login';
+    
+    // Clear cookies first
+    await fetch('/api/auth/tokens', {
+      method: 'DELETE',
+      credentials: 'include',
+    }).catch(console.error);
 
-      toast.success("Logged out successfully");
-      
-      // Redirect to login
-      window.location.href = '/auth/login';
-    }
+    // Show success message
+    toast.success("Logged out successfully");
+
+    // Cleanup in background
+    api.post('/auth/logout', {
+      access_token: getCookie('access_token'),
+    }).catch(console.error);
+
+    // Navigate after cookies are cleared
+    window.location.href = returnUrl;
   },
 
   async refreshToken(): Promise<AuthResponse> {
