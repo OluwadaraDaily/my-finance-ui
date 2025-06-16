@@ -4,12 +4,13 @@ import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { TextInput, SelectInput, TextArea } from "../input";
 import { PrimaryButton } from "../button";
-import { useCategoriesData } from "@/hooks/useCategoriesData";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import { formatFormDatesForAPI } from "@/utils/date";
 import { transactionsService } from "@/lib/api/services/transactions";
 import { TransactionType } from "@/lib/api/services/transactions/types";
 import { toast } from "sonner";
+import { budgetService } from "@/lib/api/services/budgets";
+import { Budget } from "@/lib/api/services/budgets/types";
 
 
 const addTransactionSchema = z.object({
@@ -43,7 +44,12 @@ const AddTransactionModal = (
 
   const transactionType = watch("type");
 
-  const { budgets } = useCategoriesData();
+  const { data: budgetsResponse } = useQuery({
+    queryKey: ["budgets"],
+    queryFn: () => budgetService.getBudgets({}),
+  })
+
+  const budgets = budgetsResponse?.data || [];
 
   const { mutate: createTransaction, isPending } = useMutation({
     mutationFn: async (data: AddTransactionFormData) => {
@@ -143,7 +149,7 @@ const AddTransactionModal = (
             render={({ field }) => (
               <SelectInput
                 label="Budget"
-                options={Array.isArray(budgets) ? budgets.map((budget) => ({
+                options={Array.isArray(budgets) ? budgets.map((budget: Budget) => ({
                   label: budget.name,
                   value: budget.id.toString(),
                 })) : []}
