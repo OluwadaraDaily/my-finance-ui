@@ -13,7 +13,7 @@ import DeleteBudgetModal from "@/components/budgets/delete-budget-modal";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { budgetService } from "@/lib/api/services/budgets";
 import { Budget, BudgetSummary } from "@/lib/api/services/budgets/types";
-import { AlertCircle, PiggyBank } from "lucide-react";
+import { PiggyBank } from "lucide-react";
 import { ErrorState } from "@/components/ui/error-state";
 import { LoadingSkeleton } from "@/components/ui/loading-skeleton";
 
