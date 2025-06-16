@@ -1,7 +1,7 @@
 "use client"
 import React, { useState } from "react"
 import { sidebarData } from "./data"
-import Image from "next/image"
+import { Image } from "@/components/ui/image"
 import { SidebarItem } from "@/types/sidebar"
 import { useRouter, usePathname } from "next/navigation"
 import { activeItemStyle, activeItemStyleLg, dashboardItemStyle, dashboardItemStyleLg } from "./style"
@@ -13,32 +13,33 @@ interface DashboardSidebarProps {
 }
 
 export default function DashboardSidebar({ onCollapse }: DashboardSidebarProps) {
-  const router = useRouter()
-  const pathname = usePathname()
-  const [isCollapsed, setIsCollapsed] = useState(false)
+  const [isCollapsed, setIsCollapsed] = useState(false);
+  const router = useRouter();
+  const pathname = usePathname();
 
-  const [activeItemId, setActiveItemId] = useState<number>(() => {
-    const matchingItem = sidebarData.find(item => item.url === pathname)
-    return matchingItem?.id ?? sidebarData[0].id
-  })
-
-  React.useEffect(() => {
-    const matchingItem = sidebarData.find(item => item.url === pathname)
-    if (matchingItem) {
-      setActiveItemId(matchingItem.id)
-    }
-  }, [pathname])
+  // Initialize activeItemId based on current pathname
+  const [activeItemId, setActiveItemId] = useState<string>(() => {
+    const currentItem = sidebarData.find(item => pathname === item.url);
+    return currentItem?.id || "1"; // Default to Overview if no match
+  });
 
   const handleItemClick = (item: SidebarItem) => {
-    setActiveItemId(item.id)
-    router.push(item.url)
-  }
+    setActiveItemId(item.id);
+    router.push(item.url);
+  };
 
-  const toggleSidebar = () => {
-    const newState = !isCollapsed
-    setIsCollapsed(newState)
-    onCollapse(newState)
-  }
+  const handleLogout = async () => {
+    await authService.logout();
+    router.push("/auth/login");
+  };
+
+  // Update activeItemId when pathname changes
+  React.useEffect(() => {
+    const currentItem = sidebarData.find(item => pathname === item.url);
+    if (currentItem) {
+      setActiveItemId(currentItem.id);
+    }
+  }, [pathname]);
 
   return (
     <aside>
@@ -50,7 +51,7 @@ export default function DashboardSidebar({ onCollapse }: DashboardSidebarProps) 
           <button
             key={item.id}
             className={`${dashboardItemStyle}
-              ${activeItemId === item.id ? `${activeItemStyle}` : "text-grey-300"}`
+              ${activeItemId === item.id ? activeItemStyle : "text-grey-300"}`
             }
             onClick={() => handleItemClick(item)}
           >
@@ -59,7 +60,10 @@ export default function DashboardSidebar({ onCollapse }: DashboardSidebarProps) 
               alt={`${item.title} icon`}
               width={24}
               height={24}
-              className={`cursor-pointer inline`}
+              className="cursor-pointer inline"
+              priority
+              sizes="24px"
+              key={activeItemId === item.id ? item.activeIcon : item.icon}
             />
             <p className="hidden md:block font-bold text-xs">{item.title}</p>
           </button>
@@ -85,6 +89,8 @@ export default function DashboardSidebar({ onCollapse }: DashboardSidebarProps) 
                   className={`absolute transition-opacity duration-300 ${
                     isCollapsed ? 'opacity-0' : 'opacity-100'
                   }`}
+                  priority
+                  sizes="121px"
                 />
                 <Image
                   src="/icons/logo-small.svg"
@@ -94,6 +100,8 @@ export default function DashboardSidebar({ onCollapse }: DashboardSidebarProps) 
                   className={`absolute transition-opacity duration-300 ${
                     isCollapsed ? 'opacity-100' : 'opacity-0'
                   }`}
+                  priority
+                  sizes="12px"
                 />
               </div>
             </div>
@@ -111,6 +119,9 @@ export default function DashboardSidebar({ onCollapse }: DashboardSidebarProps) 
                     alt={item.title}
                     width={24}
                     height={24}
+                    priority
+                    sizes="24px"
+                    key={activeItemId === item.id ? item.activeIcon : item.icon}
                   />
                   <span className={`font-medium transition-all duration-300 ${isCollapsed ? 'hidden' : ''}`}>
                     {item.title}
@@ -119,11 +130,17 @@ export default function DashboardSidebar({ onCollapse }: DashboardSidebarProps) 
               ))}
             </div>
           </div>
+
           {/* Bottom Section */}
-          <div>
-            <button 
-              onClick={toggleSidebar}
-              className="flex items-center gap-3 py-4 px-8 hover:cursor-pointer"
+          <div className="flex flex-col gap-8">
+            <button
+              className={`flex items-center gap-4 text-grey-300 hover:text-white transition-colors hover:cursor-pointer ${
+                isCollapsed ? 'justify-center' : 'px-8'
+              }`}
+              onClick={() => {
+                setIsCollapsed(!isCollapsed);
+                onCollapse(!isCollapsed);
+              }}
             >
               <Image
                 src="/icons/minimize-menu.svg"
@@ -136,10 +153,11 @@ export default function DashboardSidebar({ onCollapse }: DashboardSidebarProps) 
                 Minimize Menu
               </span>
             </button>
-            {/* Sign out button */}
-            <button 
-              onClick={() => authService.logout()}
-              className="flex items-center gap-3 py-4 px-8 hover:cursor-pointer"
+            <button
+              className={`flex items-center gap-4 text-grey-300 hover:text-white transition-colors hover:cursor-pointer ${
+                isCollapsed ? 'justify-center' : 'px-8'
+              }`}
+              onClick={handleLogout}
             >
               <LogOut className="w-6 h-6 rotate-180"/>
               <span className={`transition-all duration-300 ${isCollapsed ? 'hidden' : ''}`}>
@@ -150,5 +168,5 @@ export default function DashboardSidebar({ onCollapse }: DashboardSidebarProps) 
         </div>
       </div>
     </aside>
-  )
+  );
 }

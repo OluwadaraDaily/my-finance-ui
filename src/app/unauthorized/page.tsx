@@ -4,7 +4,7 @@ import { PrimaryButton, SecondaryButton } from '@/components/button';
 import { Card } from '@/components/ui/card';
 import { Shield } from 'lucide-react';
 import { useRouter } from 'next/navigation';
-import Image from 'next/image';
+import { Image } from '@/components/ui/image';
 
 export default function UnauthorizedPage() {
   const router = useRouter();
@@ -18,6 +18,8 @@ export default function UnauthorizedPage() {
           alt="My Finance Logo"
           width={121}
           height={22}
+          priority
+          sizes="121px"
         />
       </div>
 
@@ -45,15 +47,14 @@ export default function UnauthorizedPage() {
             </ul>
           </div>
 
-          <div className="flex flex-col space-y-3">
+          <div className="flex flex-col gap-2">
             <PrimaryButton
-              label="Sign in again"
+              label="Go to Login"
               onClick={() => router.push('/auth/login')}
             />
-            
-            <SecondaryButton 
-              label="Go back"
-              onClick={() => router.back()}
+            <SecondaryButton
+              label="Go to Home"
+              onClick={() => router.push('/')}
             />
           </div>
         </Card>

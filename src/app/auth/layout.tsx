@@ -1,4 +1,4 @@
-import Image from 'next/image';
+import { Image } from '@/components/ui/image';
 import React from 'react';
 
 export default function AuthLayout({
@@ -18,6 +18,8 @@ export default function AuthLayout({
             alt="My Finance Logo"
             width={121}
             height={22}
+            priority
+            sizes="121px"
           />
         </div>
 
@@ -32,6 +34,8 @@ export default function AuthLayout({
                 alt="My Finance Logo"
                 width={121}
                 height={22}
+                priority
+                sizes="121px"
               />
             </div>
             <div className='absolute bottom-12 w-[90%] left-1/2 -translate-x-1/2 text-white'>

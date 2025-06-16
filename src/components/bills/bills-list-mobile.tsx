@@ -1,4 +1,4 @@
-import Image from "next/image";
+import { Image } from "@/components/ui/image";
 import { IBillsData } from "@/types/bills";
 import { formatCurrency, getOrdinalSuffix } from "@/utils/format";
 import { CheckCircle, XCircle } from "lucide-react";
@@ -15,6 +15,8 @@ export default function BillsListMobile({ data }: { data: IBillsData[] }) {
               width={40}
               height={40}
               className="rounded-full"
+              quality={85}
+              sizes="40px"
             />
             <div>
               <div className="font-bold text-base text-grey-900">{bill.name}</div>

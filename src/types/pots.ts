@@ -1,5 +1,7 @@
+
 export interface IPotItem {
   label: string,
   amount: number,
-  color: string
+  color: string,
+  loading?: boolean
 }

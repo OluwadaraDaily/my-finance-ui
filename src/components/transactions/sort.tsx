@@ -1,7 +1,7 @@
 "use client";
 
 import { ChevronDown } from "lucide-react";
-import Image from "next/image";
+import { Image } from "@/components/ui/image";
 import { useState, useEffect } from "react";
 
 export default function Sort({ onSort }: { onSort: (sortOption: string) => void }) {
@@ -31,6 +31,8 @@ export default function Sort({ onSort }: { onSort: (sortOption: string) => void 
             alt="sort"
             width={20}
             height={20}
+            priority
+            sizes="20px"
           />
         </div>
         <div className="hidden md:flex items-center gap-2">
@@ -42,22 +44,20 @@ export default function Sort({ onSort }: { onSort: (sortOption: string) => void 
         </div>
       </div>
       {isOpen && (
-        <div
-          className="absolute top-[120%] right-0 md:left-1/2 md:translate-x-[-50%] bg-white rounded-lg px-5 py-3 w-[114px] shadow-[0_0_10px_rgba(0,0,0,0.1)]"
-          onClick={handleOpen}
-        >
-          {sortOptions.map((option :string, index :number) => (
-            <div key={option} className="z-10 bg-white">
-              <div className={`cursor-pointer text-sm ${currentSort === option ? "font-bold" : ""}`} onClick={() => handleSort(option)}>
-                {option}
-              </div>
-              {index !== sortOptions.length - 1 && (
-                <div className="h-[1px] bg-grey-100 w-full my-3"></div>
-              )}
-            </div>
+        <div className="absolute right-0 top-full mt-2 bg-white rounded-lg shadow-lg py-2 z-10">
+          {sortOptions.map((option) => (
+            <button
+              key={option}
+              className={`w-full text-left px-4 py-2 text-sm hover:bg-grey-100 ${
+                currentSort === option ? "font-semibold" : ""
+              }`}
+              onClick={() => handleSort(option)}
+            >
+              {option}
+            </button>
           ))}
         </div>
       )}
     </div>
-  )
+  );
 }

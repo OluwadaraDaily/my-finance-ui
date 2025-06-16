@@ -33,7 +33,9 @@ export default function PotItem({
       />
       <div>
         <p className="text-xs mb-1">{label}</p>
-        <p className="text-sm font-bold">{formatCurrency(amount)}</p>
+        <p className="text-sm font-bold">
+          {formatCurrency(amount, { minimumFractionDigits: 0, maximumFractionDigits: 0 })}
+        </p>
       </div>
     </div>
   )

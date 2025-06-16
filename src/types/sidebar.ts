@@ -1,6 +1,7 @@
 export interface SidebarItem {
-  id: number
+  id: string
   title: string
   url: string
   icon: string
+  activeIcon: string
 }

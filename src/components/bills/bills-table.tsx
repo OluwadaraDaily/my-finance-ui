@@ -1,5 +1,5 @@
 import { flexRender, getCoreRowModel, getFilteredRowModel, getSortedRowModel, useReactTable, createColumnHelper } from '@tanstack/react-table';
-import Image from "next/image";
+import { Image } from "@/components/ui/image";
 import { formatCurrency } from "@/utils/format";
 import React from "react";
 import { IBillsData } from "@/types/bills";
@@ -28,6 +28,8 @@ export default function BillsTable({ data, globalFilter, setGlobalFilter }: Bill
               width={40}
               height={40}
               className="rounded-[50%]"
+              quality={85}
+              sizes="40px"
             />
             <span className="font-bold text-sm">{name}</span>
           </div>
