@@ -32,6 +32,14 @@ api.interceptors.response.use(
   async (error: AxiosError) => {
     const originalRequest = error.config;
     
+    console.error('API Error:', {
+      url: originalRequest?.url,
+      method: originalRequest?.method,
+      status: error.response?.status,
+      message: error.message,
+      response: error.response?.data
+    });
+    
     // Handle 401 Unauthorized
     if (error.response?.status === 401 && originalRequest && !originalRequest._retry) {
       originalRequest._retry = true;
@@ -61,6 +69,7 @@ api.interceptors.response.use(
           return api(originalRequest);
         }
       } catch (refreshError) {
+        console.error('Token refresh failed:', refreshError);
         // If refresh fails, redirect to login
         window.location.href = '/login';
         return Promise.reject(refreshError);
@@ -69,6 +78,7 @@ api.interceptors.response.use(
     
     // Handle 403 Forbidden
     if (error.response?.status === 403) {
+      console.error('Access forbidden:', error.response?.data);
       window.location.href = '/unauthorized';
       return Promise.reject(error);
     }

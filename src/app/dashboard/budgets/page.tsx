@@ -231,7 +231,7 @@ export default function BudgetsPage() {
     isFetching,
     error: budgetsError 
   } = useQuery({
-    queryKey: ["budgets"],
+    queryKey: ["budgets", "list"],
     queryFn: () => budgetService.getBudgets({})
   });
 
@@ -240,7 +240,7 @@ export default function BudgetsPage() {
     isLoading: isSummaryLoading,
     error: summaryError
   } = useQuery({
-    queryKey: ["budget-summary"],
+    queryKey: ["budgets", "summary"],
     queryFn: () => budgetService.getBudgetSummary()
   });
 
