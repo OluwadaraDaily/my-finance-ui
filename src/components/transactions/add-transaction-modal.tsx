@@ -61,6 +61,9 @@ const AddTransactionModal = (
       setIsOpen(false);
       // Bubble up an event to inform parent component to refetch transactions
       queryClient.invalidateQueries({ queryKey: ["transactions"] });
+      queryClient.invalidateQueries({ queryKey: ["budgets"] });
+      queryClient.invalidateQueries({ queryKey: ["transactionSummary"] });
+      queryClient.invalidateQueries({ queryKey: ["potSummary"] });
       toast.success("Transaction created successfully");
       reset();
     },
