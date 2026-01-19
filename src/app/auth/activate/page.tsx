@@ -7,7 +7,7 @@ import { useSearchParams, useRouter } from "next/navigation"
 import React, { Suspense, useEffect, useState } from "react"
 import { toast } from "sonner"
 import { useMutation } from "@tanstack/react-query"
-import { CheckCircle, XCircle, Loader2, Mail } from "lucide-react"
+import { CheckCircle, XCircle, Loader2 } from "lucide-react"
 
 type ActivationState = "loading" | "success" | "expired" | "error"
 
@@ -64,6 +64,7 @@ function ActivateAccount() {
       setState("error")
       setErrorMessage("No activation token provided.")
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [token])
 
   const handleResend = (e: React.FormEvent) => {
