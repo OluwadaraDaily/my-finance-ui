@@ -1,9 +1,16 @@
 import { NextResponse } from 'next/server'
 import type { NextRequest } from 'next/server'
 
+const PUBLIC_PATHS = [
+  '/auth/login',
+  '/auth/register',
+  '/auth/activate',
+  '/auth/reset-password',
+]
+
 export async function middleware(request: NextRequest) {
   const path = request.nextUrl.pathname
-  const isPublicPath = path === '/auth/login' || path === '/auth/register'
+  const isPublicPath = PUBLIC_PATHS.includes(path)
   
   const accessToken = request.cookies.get('access_token')?.value || ''
 
@@ -31,7 +38,6 @@ export async function middleware(request: NextRequest) {
 export const config = {
   matcher: [
     '/dashboard/:path*',
-    '/auth/login',
-    '/auth/register',
+    '/auth/:path*',
   ],
 } 

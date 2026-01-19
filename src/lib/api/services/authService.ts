@@ -77,5 +77,32 @@ export const authService = {
   async getUserInfo(): Promise<APIResponse<User>> {
     const response = await api.get('/users/me');
     return response.data as APIResponse<User>;
+  },
+
+  async activateAccount(token: string): Promise<APIResponse<{ user: User }>> {
+    const response = await api.get(`/auth/activate/${token}`);
+    return response.data;
+  },
+
+  async resendActivationEmail(email: string): Promise<APIResponse<null>> {
+    const response = await api.post('/auth/resend-activation', { email });
+    return response.data;
+  },
+
+  async validateResetToken(token: string): Promise<APIResponse<null>> {
+    const response = await api.get(`/auth/validate-reset-token/${token}`);
+    return response.data;
+  },
+
+  async resetPassword(token: string, newPassword: string): Promise<APIResponse<null>> {
+    const response = await api.post(`/auth/reset-password/${token}`, {
+      new_password: newPassword
+    });
+    return response.data;
+  },
+
+  async requestPasswordReset(email: string): Promise<APIResponse<null>> {
+    const response = await api.post('/auth/forgot-password', { email });
+    return response.data;
   }
 }; 

@@ -70,6 +70,11 @@ function LoginForm() {
               placeholder="Enter your password"
               error={errors.password?.message}
             />
+            <div className="mt-2 text-right">
+              <a href="/auth/reset-password" className="text-sm text-gray-500 hover:text-grey-900 underline">
+                Forgot password?
+              </a>
+            </div>
           </div>
         </div>
         <div className="mb-8 w-full">
