@@ -83,7 +83,6 @@ export default function PotsPage() {
   }
 
   const handleAddMoneyToPot = (pot: Pot) => {
-    console.log("Adding money to pot =>", pot)
     setSelectedPot(pot)
     setIsAddMoneyToPotModalOpen(true)
   }

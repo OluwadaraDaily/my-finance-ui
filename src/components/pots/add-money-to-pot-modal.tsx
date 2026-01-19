@@ -68,6 +68,7 @@ export default function AddMoneyToPotModal({
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["pots"] });
+      queryClient.invalidateQueries({ queryKey: ['transactions', { skip: 0, limit: 5 }] });
       setIsOpen(false);
       toast.success("Money added to pot successfully");
       reset();

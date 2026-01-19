@@ -26,7 +26,7 @@ type SelectInputProps = {
 const SelectInput = ({
   label,
   options,
-  value,
+  value = "",
   onValueChange,
   withColorTag = false,
   error,
