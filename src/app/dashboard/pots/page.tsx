@@ -89,7 +89,6 @@ export default function PotsPage() {
   }
 
   const handleWithdrawFromPot = (pot: Pot) => {
-    console.log("Withdrawing money from pot =>", pot)
     setSelectedPot(pot)
     setIsWithdrawFromPotModalOpen(true)
   }

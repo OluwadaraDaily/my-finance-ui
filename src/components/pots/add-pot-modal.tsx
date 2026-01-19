@@ -106,8 +106,7 @@ export default function AddPotModal({
                 label="Color Tag"
                 options={COLOR_TAG_OPTIONS}
                 value={field.value}
-                onChange={field.onChange}
-                onBlur={field.onBlur}
+                onValueChange={field.onChange}
                 error={errors.color?.message}
                 withColorTag
               />

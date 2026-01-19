@@ -114,8 +114,7 @@ const AddTransactionModal = (
                 label="Type"
                 options={["DEBIT", "CREDIT"]}
                 value={field.value}
-                onChange={field.onChange}
-                onBlur={field.onBlur}
+                onValueChange={field.onChange}
                 error={errors.type?.message}
                 placeholder="Select transaction type"
               />
@@ -156,11 +155,9 @@ const AddTransactionModal = (
                   value: budget.id.toString(),
                 })) : []}
                 value={field.value ? field.value.toString() : ""}
-                onChange={(e) => {
-                  const value = e.target.value;
+                onValueChange={(value) => {
                   field.onChange(value === "" ? undefined : Number(value));
                 }}
-                onBlur={field.onBlur}
                 error={errors.budget_id?.message}
                 placeholder="Select budget"
                 required={false}
